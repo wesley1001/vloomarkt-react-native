@@ -10,7 +10,7 @@ import React, {
   View,
 } from 'react-native';
 
-
+var GeoLocation = require('../components/helpers/GeoLocation');
 
 class News extends Component {
 
@@ -26,17 +26,16 @@ class News extends Component {
 
 	render(){
 		return(
-			<Text style={styles.text}>Testingg hey</Text>
+			<View style={styles.container}><GeoLocation /></View>
+			
 		);
 	}
 }
 
 
 var styles = StyleSheet.create({
-	text:{
-		fontSize: 25,
-		marginTop: 100,
-		color: 'black'
+	container:{
+		flex: 1,
 	}
 });
 

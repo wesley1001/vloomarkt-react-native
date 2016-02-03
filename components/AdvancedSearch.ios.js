@@ -14,7 +14,8 @@ import React, {
 } from 'react-native';
 
 var Icon = require('../node_modules/react-native-vector-icons/Ionicons');
-var Maps = require('./utils/Maps');
+var Maps = require('./advanced_search/Maps');
+var Categories = require('./advanced_search/Categories');
 
 
 var regionText = {
@@ -34,12 +35,12 @@ class AdvancedSearch extends Component {
     	};
   	}
 
-  	_SearchPress(){
-
+  	_GoBackToSearchPress(){
+    	this.props.navigator.pop();
   	}
 
-	_GoBackToSearchPress(){
-    	this.props.navigator.pop();
+  	_SearchPress(){
+
   	}
 
 	render(){
@@ -55,7 +56,7 @@ class AdvancedSearch extends Component {
 		            	>
 			            	<View>
 			            		<Text style={styles.searchCancelButtonText}>
-			            			<Icon name="ios-arrow-left" size={30} style={{color:'#fff'}}/>
+			            			<Icon name="ios-arrow-left" size={30} style={{color:'#fff', marginTop: 10}}/>
 			            		</Text>
 			            	</View>
 		            	</TouchableWithoutFeedback>
@@ -75,12 +76,15 @@ class AdvancedSearch extends Component {
 
 
 		        <View style={styles.searchBarSection}>
-		        	<Icon name="ios-search-strong" size={30} style={{color:'#6656c8'}}/>
+		        	<Icon name="ios-search-strong" size={25} style={{color:'#6656c8'}}/>
 		        	<TextInput style={styles.searchBar}
 		                placeholder={'What are you searching for?'}
 		                placeholderTextColor = '#808080'
 		                returnKeyType='search'
 		                keyboardAppearance='light'
+		                onChangeText={(searchTerm) => this.setState({searchTerm})}
+		                value={this.state.searchTerm}
+		                clearButtonMode='always'
 		              />
 		             
 		        </View>
@@ -93,43 +97,12 @@ class AdvancedSearch extends Component {
 
 		        <View style={styles.divider}></View>
 
+		        <Categories />
+
 	        </View>
 		);
 	}
-
-	_getAnnotations(region) {
-	    return [{
-	      longitude: region.longitude,
-	      latitude: region.latitude,
-	      title: 'You Are Here',
-	    }];
-  	}
-
-	  _onRegionChange(region) {
-	    this.setState({
-	      mapRegionInput: region,
-	    });
-	  }
-
-  _onRegionChangeComplete(region) {
-    if (this.state.isFirstLoad) {
-      this.setState({
-        mapRegionInput: region,
-        annotations: this._getAnnotations(region),
-        isFirstLoad: false,
-      });
-    }
   }
-
-  _onRegionInputChanged(region) {
-    this.setState({
-      mapRegion: region,
-      mapRegionInput: region,
-      annotations: this._getAnnotations(region),
-    });
-  }
-
-}
 
 
 var styles = StyleSheet.create({

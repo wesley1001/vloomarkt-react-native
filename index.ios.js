@@ -9,7 +9,8 @@ import React, {
   Image,
   TabBarIOS,
   NavigatorIOS,
-  View
+  View,
+  AlertIOS
 } from 'react-native';
 
 var Discover = require('./components/Discover');
@@ -20,11 +21,16 @@ var Icon = require('./node_modules/react-native-vector-icons/Ionicons');
 class vloomarkt extends Component {
   constructor(props){
     super(props);
-    this.state = {selectedTab: 'SearchTab'}
+    this.state = {
+      selectedTab: 'SearchTab',
+      initialPosition: 'unkown',
+    }
   }
   setTab(tabId){
     this.setState({selectedTab: tabId})
   }
+
+
   render(){
     return(
       <TabBarIOS tintColor="darkslateblue">
@@ -48,8 +54,7 @@ class vloomarkt extends Component {
         selected={this.state.selectedTab === 'SearchTab'}
         onPress={() => this.setTab('SearchTab')}
         title="Search"
-        iconName="ios-search-strong"
-        >
+        iconName="ios-search-strong">
         
         <NavigatorIOS
           style={{flex: 1}}
@@ -58,8 +63,6 @@ class vloomarkt extends Component {
             title: 'Search',
             component: Search
           }} />
-        
-
         </Icon.TabBarItem>
 
         <Icon.TabBarItem
@@ -73,8 +76,8 @@ class vloomarkt extends Component {
         </Icon.TabBarItem>
 
         <Icon.TabBarItem
-        selected={this.state.selectedTab === 'News'}
-        onPress={() => this.setTab('News')}
+        selected={this.state.selectedTab === 'NewsTab'}
+        onPress={() => this.setTab('NewsTab')}
         iconName="ios-bell"
         title="News"
         badge={0}>

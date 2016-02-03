@@ -17,11 +17,12 @@ import React, {
 
 var Progress = require('react-native-progress');
 var Icon = require('../node_modules/react-native-vector-icons/Ionicons');
+var BackgroundGeolocation = require('react-native-background-geolocation');
 
 var Discover = require('./Discover');
 var News = require('./News');
 var AdvancedSearch = require('./AdvancedSearch')
-var RecentSearch = require('./utils/RecentSearch')
+var RecentSearch = require('./advanced_search/RecentSearch')
 
 var API_CATEGORY_MAIN_URL = 'http://localhost:8000/api/category/'
 
@@ -32,9 +33,11 @@ class Search extends Component {
       super(props);
       this.state = {
         searchCategory: 'all',
-        searchTerm: 'SEARCH TERM',
+        searchTerm: undefined,
+        initialPosition: 'unkown',
       };
   }
+
 
   _handleAdvanceSearchPress(){
       this.props.navigator.push({
@@ -59,6 +62,9 @@ class Search extends Component {
                 placeholderTextColor = '#808080'
                 returnKeyType='search'
                 keyboardAppearance='light'
+                onChangeText={(searchTerm) => this.setState({searchTerm})}
+                value={this.state.searchTerm}
+                clearButtonMode='always'
               />
               <View style={styles.searchCancelButton}>
               <TouchableWithoutFeedback
@@ -85,6 +91,7 @@ class Search extends Component {
                 </View>
             </View>
             <RecentSearch />
+
         </View>
     );
   }
