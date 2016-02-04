@@ -10,19 +10,22 @@ import React, {
   TabBarIOS,
   NavigatorIOS,
   View,
+  Navigator,
   AlertIOS
 } from 'react-native';
 
 var Discover = require('./components/Discover');
 var Search = require('./components/Search');
 var News = require('./components/News');
+var Sell = require('./components/Sell');
+
 var Icon = require('./node_modules/react-native-vector-icons/Ionicons');
 
 class vloomarkt extends Component {
   constructor(props){
     super(props);
     this.state = {
-      selectedTab: 'SearchTab',
+      selectedTab: 'SellTab',
       initialPosition: 'unkown',
     }
   }
@@ -34,6 +37,7 @@ class vloomarkt extends Component {
   render(){
     return(
       <TabBarIOS tintColor="darkslateblue">
+
         <Icon.TabBarItem
         title="Discover"
         iconName="ios-star"
@@ -70,9 +74,15 @@ class vloomarkt extends Component {
         onPress={() => this.setTab('SellTab')}
         title="Sell"
         iconName="ios-camera">
-        <View style={styles.tabContent}>
-          <Text style={styles.tabText}>Tab Two</Text>
-        </View>
+        
+        <NavigatorIOS
+          style={{flex: 1}}
+          navigationBarHidden={true}
+          initialRoute={{
+            title: 'Sell',
+            component: Sell
+        }} />
+
         </Icon.TabBarItem>
 
         <Icon.TabBarItem
