@@ -10,7 +10,7 @@ import React, {
   TouchableWithoutFeedback,
   TouchableHighlight,
   View,
-  PickerIOS,
+  AlertIOS,
   Image,
 } from 'react-native';
 
@@ -18,6 +18,8 @@ var Icon = require('../node_modules/react-native-vector-icons/Ionicons');
 var LinearGradient = require('react-native-linear-gradient');
 var AwesomeButton = require('react-native-awesome-button');
 var UIImagePickerManager = require('NativeModules').UIImagePickerManager;
+
+
 
 var options = {
   title: 'Select Picture', // specify null or empty string to remove the title
@@ -28,7 +30,7 @@ var options = {
   mediaType: 'photo', // 'photo' or 'video'
   videoQuality: 'high', // 'low', 'medium', or 'high'
   quality: 0.2, // photos only
-  allowsEditing: false, // Built in functionality to resize/reposition the image
+  allowsEditing: true, // Built in functionality to resize/reposition the image
   noData: false, // photos only - disables the base64 `data` field from being generated (greatly improves performance on large photos)
   storageOptions: { // if this key is provided, the image will get saved in the documents/pictures directory (rather than a temporary directory)
     skipBackup: true, // image will NOT be backed up to icloud
@@ -45,45 +47,125 @@ class Sell extends Component {
       this.state = {
         currency: 'BHD',
         buttonState: 'idle',
-        avatarSource: undefined,
+        firstImageSource: undefined,
+        secondImageSource: undefined,
+        thirdImageSource: undefined,
       };
   	}
 
-  _onSellPressButton() {
+  _onCameraPressButton() {
     UIImagePickerManager.showImagePicker(options, (response) => {
-  console.log('Response = ', response);
+      console.log('Response = ', response);
 
-  if (response.didCancel) {
-    console.log('User cancelled image picker');
-  }
-  else if (response.error) {
-    console.log('UIImagePickerManager Error: ', response.error);
-  }
-  else if (response.customButton) {
-    console.log('User tapped custom button: ', response.customButton);
-  }
-  else {
-    const source = {uri: 'data:image/jpeg;base64,' + response.data, isStatic: true};
-    this.setState({
-      avatarSource: source
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      }
+      else if (response.error) {
+        console.log('UIImagePickerManager Error: ', response.error);
+      }
+      else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      }
+      else {
+        const source = {uri: 'data:image/jpeg;base64,' + response.data, isStatic: true};
+        this.setState({
+          firstImageSource: source,
+        });
+      }
     });
   }
-});
+
+  _onSecondCameraPressButton(){
+    UIImagePickerManager.showImagePicker(options, (response) => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      }
+      else if (response.error) {
+        console.log('UIImagePickerManager Error: ', response.error);
+      }
+      else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      }
+      else {
+        const source = {uri: 'data:image/jpeg;base64,' + response.data, isStatic: true};
+        this.setState({
+          secondImageSource: source,
+        });
+      }
+    });
+  }
+
+  _onThirdCameraPressButton(){
+    UIImagePickerManager.showImagePicker(options, (response) => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      }
+      else if (response.error) {
+        console.log('UIImagePickerManager Error: ', response.error);
+      }
+      else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      }
+      else {
+        const source = {uri: 'data:image/jpeg;base64,' + response.data, isStatic: true};
+        this.setState({
+          thirdImageSource: source,
+        });
+      }
+    });
   }
 
 	render(){
-    
-		return(
-      
-      <View style={styles.container}>
 
-        <View styles={styles.cameraContainer}>
+    var imageHolder;
+
+    if (this.state.firstImageSource && !this.state.secondImageSource && !this.state.thirdImageSource) { 
+      imageHolder = 
+      <View style={{backgroundColor: 'rgba(0,0,0,0)', justifyContent: 'center', flexDirection: 'row', flexWrap: 'wrap',}}>
+        <Image source={this.state.firstImageSource} style={styles.oneImage} />
+        <TouchableWithoutFeedback style={styles.secondImageUploadButton} onPress={this._onSecondCameraPressButton.bind(this)}>
+          <View style={styles.secondImageUploadButton}>
+            <Icon name="ios-plus-empty" size={60} style={styles.plusUploadIcon}/>
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+    ;}
+    else if (this.state.firstImageSource && this.state.secondImageSource && !this.state.thirdImageSource) {
+      imageHolder = 
+      <View style={{backgroundColor: 'rgba(0,0,0,0)', justifyContent: 'center', flexDirection: 'row', flexWrap: 'wrap',}}>
+        <Image source={this.state.firstImageSource} style={styles.oneImage} />
+        <Image source={this.state.secondImageSource} style={styles.oneImage} />
+        <TouchableWithoutFeedback style={styles.secondImageUploadButton} onPress={this._onThirdCameraPressButton.bind(this)}>
+          <View style={styles.secondImageUploadButton}>
+            <Icon name="ios-plus-empty" size={60} style={styles.plusUploadIcon}/>
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+    ;}
+    else if (this.state.firstImageSource && this.state.secondImageSource && this.state.thirdImageSource) {
+      imageHolder = <View style={{backgroundColor: 'rgba(0,0,0,0)'}}>
+        <Image source={this.state.firstImageSource} style={styles.oneImage} />
+        <Image source={this.state.secondImageSource} style={styles.oneImage} />
+        <Image source={this.state.thirdImageSource} style={styles.oneImage} />
+      </View>
+    ;}
+    else { imageHolder = 
+      <TouchableWithoutFeedback style={styles.cameraButton} onPress={this._onCameraPressButton.bind(this)}>
+          <View style={{backgroundColor: 'rgba(0,0,0,0)'}}>
+          <Icon name="ios-camera" size={60} style={styles.cameraIcon}/>
+      </View>
+      </TouchableWithoutFeedback>
+    ;}
+
+		return(
+      <View style={styles.container}>
           <LinearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={styles.linearGradient}>
-              <TouchableWithoutFeedback style={styles.cameraButton} onPress={this._onSellPressButton}>
-                      <Icon name="ios-camera" size={60} style={styles.cameraIcon}/>
-              </TouchableWithoutFeedback>
+              {imageHolder}
           </LinearGradient>
-        </View>
 
         <View style={styles.formContainer}>
 
@@ -135,13 +217,11 @@ class Sell extends Component {
 
           <View style={styles.divider}></View>
 
-
           <View style={styles.sellButtonHolder}>
             <TouchableHighlight style={styles.sellButton}>
               <Text style={styles.sellButtonText}>SELL IT</Text>
             </TouchableHighlight>
           </View>
-
         </View>
       </View>
 		);
@@ -155,9 +235,10 @@ var styles = StyleSheet.create({
     backgroundColor: '#eee',
 	},
   linearGradient: {
-    flex: 1,
     alignItems: 'center',
     height: 220,
+  },
+  cameraContainer: {
   },
   cameraButton: {
     borderRadius: 29,
@@ -171,6 +252,37 @@ var styles = StyleSheet.create({
     textAlign:'center',
     paddingTop: 3,
     color: '#4c669f'
+  },
+  plusUploadIcon: {
+    color: '#4c669f',
+    alignItems: 'center',
+    marginLeft: 28,
+    marginTop: 15,
+  },
+  oneImage: {
+    height: 90,
+    width: 90,
+    borderColor: '#c8c8c8',
+    borderWidth: 1,
+    marginTop: 70,
+    marginLeft: 10,
+  },
+  firstImageSource: {
+    backgroundColor: 'rgba(0,0,0,0)',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  firstImageSecondUploadHolder: {
+  },
+  secondImageUploadButton: {
+    height: 90,
+    width: 90,
+    borderWidth: 1,
+    borderColor: '#c8c8c8', 
+    backgroundColor: '#838383', 
+    marginTop: 70, 
+    marginLeft: 10, 
   },
   formContainer: {
   },
@@ -232,17 +344,21 @@ var styles = StyleSheet.create({
     backgroundColor: 'white',
     height: 30,
     width: 200,
+    paddingLeft: 4,
     
     color: '#bcbcbc',
   },
   currentCurrency: {
     width: 50,
     backgroundColor: 'white',
+    borderRightWidth: 1,
+    borderColor: '#cfcfcf',
+    height: 30,
   },
   currentCurrencyText: {
     marginTop: 5,
-    marginLeft: 4,
-    fontSize: 15,
+    marginLeft: 6,
+    fontSize: 17,
     color: '#7f7f7f',
 
   },
@@ -263,8 +379,8 @@ var styles = StyleSheet.create({
     paddingBottom: 10,
     borderRadius: 3,
     color: 'white',
+  },
 
-  }
 
 });
 

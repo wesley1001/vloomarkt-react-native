@@ -94,14 +94,16 @@ class Discover extends Component {
             <Text style={styles.headerTitle}>Discover</Text>
             <Text style={styles.headerLocation}>OFFERS AROUND MANAMA</Text>
         </View>
-        <Text style={styles.loadingText}> Please wait while we fetch offers near you! </Text>
-        <Progress.Pie
-            style={styles.progress}
-            progress={this.state.progress}
-            size={150}
-            color={'#6656c8'}
-            borderWidth={2}
-          />
+        <View style={styles.loadingView}>
+          <Text style={styles.loadingText}> Please wait while we fetch offers near you! </Text>
+          <Progress.Pie
+              style={styles.progress}
+              progress={this.state.progress}
+              size={190}
+              color={'#6656c8'}
+              borderWidth={2}
+            />
+          </View>
       </View>
       
     );
@@ -146,10 +148,12 @@ var styles = StyleSheet.create({
   },
   loadingText: {
     color: '#6656c8',
+    fontSize: 19,
     letterSpacing: -1,
     fontWeight: 'bold',
     textAlign: 'center',
     flex: 1,
+    marginBottom: 9,
   },
   container: {
     flex: 1,
@@ -198,8 +202,10 @@ var styles = StyleSheet.create({
     color: '#6656c8',
     textAlign: 'center',
     fontSize: 10,
-    
-
+  },
+  loadingView: {
+    alignItems: 'center',
+    marginTop: 100,
   },
 });
 
