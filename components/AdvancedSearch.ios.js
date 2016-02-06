@@ -16,6 +16,8 @@ import React, {
 var Icon = require('../node_modules/react-native-vector-icons/Ionicons');
 var Maps = require('./advanced_search/Maps');
 var Categories = require('./advanced_search/Categories');
+var RNGeocoder = require('react-native-geocoder');
+
 
 
 var regionText = {
@@ -25,6 +27,12 @@ var regionText = {
   longitudeDelta: '0',
 };
 
+var COUNTRY = {
+	latitude: 0,
+	longitude: 0
+};
+
+
 class AdvancedSearch extends Component {
 
 	constructor(props) {
@@ -32,8 +40,44 @@ class AdvancedSearch extends Component {
       this.state = {
       		searchCategory: this.props.searchCategory,
         	searchTerm: this.props.searchTerm,
+        	region: this.props.region,
+        	dataSource: undefined,
+        	loaded: false,
     	};
   	}
+
+  	componentWillMount() {
+	    navigator.geolocation.getCurrentPosition(
+	      (position) => {
+
+	        var userLongitude = JSON.stringify(position.coords.longitude);
+	        this.setState({userLongitude});
+	        regionText.longitude = this.state.userLongitude;
+
+	        var userLatitude = JSON.stringify(position.coords.latitude);
+	        this.setState({userLatitude});
+	        regionText.latitude = this.state.userLatitude;
+
+	        this.setState({
+		      region: {
+		        latitude: parseFloat(regionText.latitude),
+		        longitude: parseFloat(regionText.longitude),
+		        latitudeDelta: 0.4,
+		        longitudeDelta: 0.4,
+		      },
+		    });
+
+
+	        
+	      },
+	      (error) => alert(error.message),
+	      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+	    );
+
+	    
+  	}	
+
+
 
   	_GoBackToSearchPress(){
     	this.props.navigator.pop();
@@ -92,7 +136,7 @@ class AdvancedSearch extends Component {
 		        <View style={styles.divider}></View>
 
 		        <View style={styles.location}> 
-		        	<Maps />
+		        	<Maps region={this.state.region}/>
 		        </View>
 
 		        <View style={styles.divider}></View>

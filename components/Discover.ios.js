@@ -81,6 +81,8 @@ class Discover extends Component {
             contentContainerStyle={styles.list}
             dataSource={this.state.dataSource}
             renderRow={this.renderItem}
+            initialListSize={5}
+            pageSize={5}
           />
         </ScrollView>
       </View>
@@ -169,6 +171,7 @@ var styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap',
+
   },
   row: {
     justifyContent: 'center',
@@ -179,7 +182,6 @@ var styles = StyleSheet.create({
     height: 150,
     alignItems: 'center',
     position: 'relative',
-
   },
   thumb: {
     width: 210,

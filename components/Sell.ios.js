@@ -22,13 +22,12 @@ var UIImagePickerManager = require('NativeModules').UIImagePickerManager;
 
 
 var options = {
-  title: 'Select Picture', // specify null or empty string to remove the title
+  title: null, // specify null or empty string to remove the title
   cancelButtonTitle: 'Cancel',
-  takePhotoButtonTitle: 'Take Photo...', // specify null or empty string to remove this button
-  chooseFromLibraryButtonTitle: 'Choose from Library...', // specify null or empty string to remove this button
+  takePhotoButtonTitle: 'Take Photo', // specify null or empty string to remove this button
+  chooseFromLibraryButtonTitle: 'Choose from Library', // specify null or empty string to remove this button
   cameraType: 'back', // 'front' or 'back'
   mediaType: 'photo', // 'photo' or 'video'
-  videoQuality: 'high', // 'low', 'medium', or 'high'
   quality: 0.2, // photos only
   allowsEditing: true, // Built in functionality to resize/reposition the image
   noData: false, // photos only - disables the base64 `data` field from being generated (greatly improves performance on large photos)
@@ -53,7 +52,7 @@ class Sell extends Component {
       };
   	}
 
-  _onCameraPressButton() {
+  _onFirstCameraPressButton() {
     UIImagePickerManager.showImagePicker(options, (response) => {
       console.log('Response = ', response);
 
@@ -126,35 +125,58 @@ class Sell extends Component {
     if (this.state.firstImageSource && !this.state.secondImageSource && !this.state.thirdImageSource) { 
       imageHolder = 
       <View style={{backgroundColor: 'rgba(0,0,0,0)', justifyContent: 'center', flexDirection: 'row', flexWrap: 'wrap',}}>
+        <TouchableWithoutFeedback onPress={this._onFirstCameraPressButton.bind(this)}>
         <Image source={this.state.firstImageSource} style={styles.oneImage} />
+        </TouchableWithoutFeedback>
+
         <TouchableWithoutFeedback style={styles.secondImageUploadButton} onPress={this._onSecondCameraPressButton.bind(this)}>
           <View style={styles.secondImageUploadButton}>
             <Icon name="ios-plus-empty" size={60} style={styles.plusUploadIcon}/>
           </View>
         </TouchableWithoutFeedback>
+
       </View>
     ;}
     else if (this.state.firstImageSource && this.state.secondImageSource && !this.state.thirdImageSource) {
       imageHolder = 
       <View style={{backgroundColor: 'rgba(0,0,0,0)', justifyContent: 'center', flexDirection: 'row', flexWrap: 'wrap',}}>
-        <Image source={this.state.firstImageSource} style={styles.oneImage} />
-        <Image source={this.state.secondImageSource} style={styles.oneImage} />
+        
+        <TouchableWithoutFeedback onPress={this._onFirstCameraPressButton.bind(this)}>
+          <Image source={this.state.firstImageSource} style={styles.oneImage} />
+        </TouchableWithoutFeedback>
+
+        <TouchableWithoutFeedback onPress={this._onSecondCameraPressButton.bind(this)}>
+          <Image source={this.state.secondImageSource} style={styles.oneImage} />
+        </TouchableWithoutFeedback>
+
         <TouchableWithoutFeedback style={styles.secondImageUploadButton} onPress={this._onThirdCameraPressButton.bind(this)}>
           <View style={styles.secondImageUploadButton}>
             <Icon name="ios-plus-empty" size={60} style={styles.plusUploadIcon}/>
           </View>
         </TouchableWithoutFeedback>
+
       </View>
     ;}
     else if (this.state.firstImageSource && this.state.secondImageSource && this.state.thirdImageSource) {
-      imageHolder = <View style={{backgroundColor: 'rgba(0,0,0,0)'}}>
-        <Image source={this.state.firstImageSource} style={styles.oneImage} />
-        <Image source={this.state.secondImageSource} style={styles.oneImage} />
-        <Image source={this.state.thirdImageSource} style={styles.oneImage} />
+      imageHolder = 
+      <View style={{backgroundColor: 'rgba(0,0,0,0)', justifyContent: 'center', flexDirection: 'row', flexWrap: 'wrap',}}>
+        
+        <TouchableWithoutFeedback onPress={this._onFirstCameraPressButton.bind(this)}>
+          <Image source={this.state.firstImageSource} style={styles.oneImage} />
+        </TouchableWithoutFeedback>
+
+        <TouchableWithoutFeedback onPress={this._onSecondCameraPressButton.bind(this)}>
+          <Image source={this.state.secondImageSource} style={styles.oneImage} />
+        </TouchableWithoutFeedback>
+
+        <TouchableWithoutFeedback onPress={this._onThirdCameraPressButton.bind(this)}>
+          <Image source={this.state.thirdImageSource} style={styles.oneImage} />
+        </TouchableWithoutFeedback>
+
       </View>
     ;}
     else { imageHolder = 
-      <TouchableWithoutFeedback style={styles.cameraButton} onPress={this._onCameraPressButton.bind(this)}>
+      <TouchableWithoutFeedback style={styles.cameraButton} onPress={this._onFirstCameraPressButton.bind(this)}>
           <View style={{backgroundColor: 'rgba(0,0,0,0)'}}>
           <Icon name="ios-camera" size={60} style={styles.cameraIcon}/>
       </View>
@@ -247,7 +269,7 @@ var styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 34,
-    marginTop: 70,
+    marginTop: 75,
     backgroundColor: '#c8c8c8',
     textAlign:'center',
     paddingTop: 3,

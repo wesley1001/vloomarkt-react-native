@@ -12,7 +12,7 @@ import React, {
   TextInput,
   NavigatorIOS,
   TouchableWithoutFeedback,
-  AlertIOS,
+  AlertIOS,x
 } from 'react-native';
 
 var Progress = require('react-native-progress');
@@ -26,6 +26,13 @@ var RecentSearch = require('./advanced_search/RecentSearch')
 
 var API_CATEGORY_MAIN_URL = 'http://localhost:8000/api/category/'
 
+var regionText = {
+    latitude: '0',
+    longitude: '0',
+    latitudeDelta: '0',
+    longitudeDelta: '0',
+};
+
 
 class Search extends Component {
 
@@ -35,15 +42,62 @@ class Search extends Component {
         searchCategory: 'all',
         searchTerm: undefined,
         initialPosition: 'unkown',
+        userLongitude: 0,
+          userLatitude: 0,
+          region: {
+            latitude: 0,
+            longitude: 0,
+            latitudeDelta: 0,
+            longitudeDelta: 0,
+        }
       };
   }
 
+  componentWillMount() {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+
+          var userLongitude = JSON.stringify(position.coords.longitude);
+          this.setState({userLongitude});
+          regionText.longitude = this.state.userLongitude
+          var userLatitude = JSON.stringify(position.coords.latitude);
+          this.setState({userLatitude});
+          regionText.latitude = this.state.userLatitude
+          
+        },
+        (error) => alert(error.message),
+        {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+      );
+
+      this.setState({
+        region: {
+          latitude: parseFloat(regionText.latitude),
+          longitude: parseFloat(regionText.longitude),
+          latitudeDelta: 0.4,
+          longitudeDelta: 0.4,
+        },
+      });
+
+    } 
+
+
 
   _handleAdvanceSearchPress(){
+    this.setState({
+        region: {
+          latitude: parseFloat(regionText.latitude),
+          longitude: parseFloat(regionText.longitude),
+          latitudeDelta: 0.4,
+          longitudeDelta: 0.4,
+        },
+      });
       this.props.navigator.push({
           title: "AdvancedSearch",
           component: AdvancedSearch,
-          passProps: { searchTerm: this.state.searchTerm },
+          passProps: { 
+            searchTerm: this.state.searchTerm,
+            region: this.state.region 
+          },
       });
     }
 

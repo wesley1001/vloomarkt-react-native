@@ -32,6 +32,8 @@
 		5181C4E31C5D11F800757978 /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5181C4D71C5D11CF00757978 /* libART.a */; };
 		51B42BB01C62E1E700939343 /* UIImagePickerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B42BAF1C62E1E700939343 /* UIImagePickerManager.m */; };
 		51B42BB21C62E21E00939343 /* UIImagePickerManager.m in Resources */ = {isa = PBXBuildFile; fileRef = 51B42BAF1C62E1E700939343 /* UIImagePickerManager.m */; };
+		51B42BB91C65236200939343 /* libRNGeocoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 51B42BB81C65234E00939343 /* libRNGeocoder.a */; };
+		51B42BBB1C65358300939343 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 51B42BBA1C65358200939343 /* main.jsbundle */; };
 		51F7ADCC1C6234ED004ED02A /* TSLocationManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F7ADCB1C6234ED004ED02A /* TSLocationManager.framework */; };
 		51F7ADCE1C6234FE004ED02A /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F7ADCD1C6234FE004ED02A /* libsqlite3.tbd */; };
 		73E244E6E6E94507A66A7C16 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A24B9FDAE2CC44DC9096DF28 /* EvilIcons.ttf */; };
@@ -133,6 +135,13 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = BVLinearGradient;
 		};
+		51B42BB71C65234E00939343 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 51B42BB31C65234D00939343 /* RNGeocoder.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BF8FCF941BFFB184000FCD37;
+			remoteInfo = RNGeocoder;
+		};
 		78C398B81ACF4ADC00677621 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */;
@@ -177,6 +186,8 @@
 		5181C4D21C5D11CF00757978 /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
 		51B42BAF1C62E1E700939343 /* UIImagePickerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UIImagePickerManager.m; path = "../node_modules/react-native-image-picker/ios/UIImagePickerManager.m"; sourceTree = "<group>"; };
 		51B42BB11C62E1F500939343 /* UIImagePickerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIImagePickerManager.h; path = "../node_modules/react-native-image-picker/ios/UIImagePickerManager.h"; sourceTree = "<group>"; };
+		51B42BB31C65234D00939343 /* RNGeocoder.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNGeocoder.xcodeproj; path = "../node_modules/react-native-geocoder/RNGeocoder.xcodeproj"; sourceTree = "<group>"; };
+		51B42BBA1C65358200939343 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.jsbundle; path = ../main.jsbundle; sourceTree = "<group>"; };
 		51F7ADCB1C6234ED004ED02A /* TSLocationManager.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TSLocationManager.framework; path = "../node_modules/react-native-background-geolocation/RNBackgroundGeolocation/TSLocationManager.framework"; sourceTree = "<group>"; };
 		51F7ADCD1C6234FE004ED02A /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		55DCBEDF9D9A41CBB413A507 /* libRCTCamera.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTCamera.a; sourceTree = "<group>"; };
@@ -204,6 +215,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51B42BB91C65236200939343 /* libRNGeocoder.a in Frameworks */,
 				51F7ADCE1C6234FE004ED02A /* libsqlite3.tbd in Frameworks */,
 				51F7ADCC1C6234ED004ED02A /* TSLocationManager.framework in Frameworks */,
 				5181C4E31C5D11F800757978 /* libART.a in Frameworks */,
@@ -353,6 +365,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		51B42BB41C65234D00939343 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				51B42BB81C65234E00939343 /* libRNGeocoder.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		78C398B11ACF4ADC00677621 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -364,6 +384,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				51B42BB31C65234D00939343 /* RNGeocoder.xcodeproj */,
 				51B42BB11C62E1F500939343 /* UIImagePickerManager.h */,
 				51B42BAF1C62E1E700939343 /* UIImagePickerManager.m */,
 				5181C4D21C5D11CF00757978 /* ART.xcodeproj */,
@@ -395,6 +416,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				51B42BBA1C65358200939343 /* main.jsbundle */,
 				51F7ADCD1C6234FE004ED02A /* libsqlite3.tbd */,
 				51F7ADCB1C6234ED004ED02A /* TSLocationManager.framework */,
 				5181C45E1C5B9FE900757978 /* Fonts */,
@@ -485,6 +507,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = X29DHU9T4T;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -556,6 +579,10 @@
 				{
 					ProductGroup = 146834001AC3E56700842450 /* Products */;
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
+				},
+				{
+					ProductGroup = 51B42BB41C65234D00939343 /* Products */;
+					ProjectRef = 51B42BB31C65234D00939343 /* RNGeocoder.xcodeproj */;
 				},
 				{
 					ProductGroup = 5181C46B1C5BA34200757978 /* Products */;
@@ -655,6 +682,13 @@
 			remoteRef = 51B42B9D1C62B72C00939343 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		51B42BB81C65234E00939343 /* libRNGeocoder.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNGeocoder.a;
+			remoteRef = 51B42BB71C65234E00939343 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		78C398B91ACF4ADC00677621 /* libRCTLinking.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -694,6 +728,7 @@
 				FCF8C3524A3D4F7DACB1D545 /* Ionicons.ttf in Resources */,
 				1270839ABE174FEE9C83E3D0 /* MaterialIcons.ttf in Resources */,
 				46DD59FFD1FE4A0381E83952 /* Octicons.ttf in Resources */,
+				51B42BBB1C65358300939343 /* main.jsbundle in Resources */,
 				2EDE7F075D3F43F391E1F49C /* Zocial.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -810,6 +845,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEAD_CODE_STRIPPING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../node_modules/react-native-background-geolocation/**";
 				HEADER_SEARCH_PATHS = (
@@ -824,6 +861,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = vloomarkt;
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -831,6 +869,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../node_modules/react-native-background-geolocation/**";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -844,6 +884,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = vloomarkt;
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

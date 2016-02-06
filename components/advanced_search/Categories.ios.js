@@ -90,70 +90,100 @@ class Categories extends Component {
 					style={styles.categoryButton}
 					onPress={this._everythingCategoryPress.bind(this)}
 					>
-						<Text style={styles.categoryText}><Icon name="ios-circle-outline" size={20}/> Everything</Text>
+					<View style={styles.categoryAndIconHolder}>
+						<Icon style={styles.iconCategorySelection} name="ios-circle-outline" size={20}/> 
+						<Text style={styles.categoryText}>Everything</Text>
+					</View>
 					</TouchableHighlight>
 
 					<TouchableHighlight 
 					style={styles.categoryButton}
 					onPress={this._newCategoryPress.bind(this)}
 					>
-						<Text style={styles.categoryText}><Icon name="ios-circle-outline" size={20}/> New near you</Text>
+					<View style={styles.categoryAndIconHolder}>
+						<Icon style={styles.iconCategorySelection} name="ios-circle-outline" size={20}/> 
+						<Text style={styles.categoryText}>New near you</Text>
+					</View>
 					</TouchableHighlight>
 
 					<TouchableHighlight 
 					style={styles.categoryButton}
 					onPress={this._fashionCategoryPress.bind(this)}
 					>
-						<Text style={styles.categoryText}><Icon name="ios-circle-outline" size={20}/> Fashion</Text>
+					<View style={styles.categoryAndIconHolder}>
+						<Icon style={styles.iconCategorySelection} name="ios-circle-outline" size={20}/> 
+						<Text style={styles.categoryText}>Fashion</Text>
+					</View>
 					</TouchableHighlight>
 
 					<TouchableHighlight 
 					style={styles.categoryButton}
 					onPress={this._homeCategoryPress.bind(this)}
 					>
-						<Text style={styles.categoryText}><Icon name="ios-circle-outline" size={20}/> Home & Garden</Text>
+					<View style={styles.categoryAndIconHolder}>
+						<Icon style={styles.iconCategorySelection} name="ios-circle-outline" size={20}/> 
+						<Text style={styles.categoryText}>Home and Garden</Text>
+					</View>
 					</TouchableHighlight>
 
 					<TouchableHighlight 
 					style={styles.categoryButton}
 					onPress={this._electronicsCategoryPress.bind(this)}
 					>
-						<Text style={styles.categoryText}><Icon name="ios-circle-outline" size={20}/> Electronics</Text>
+					<View style={styles.categoryAndIconHolder}>
+						<Icon style={styles.iconCategorySelection} name="ios-circle-outline" size={20}/> 
+						<Text style={styles.categoryText}>Electronics</Text>
+					</View>
 					</TouchableHighlight>
 
 					<TouchableHighlight 
 					style={styles.categoryButton}
 					onPress={this._moviesCategoryPress.bind(this)}
 					>
-						<Text style={styles.categoryText}><Icon name="ios-circle-outline" size={20}/> Movies & Books</Text>
+					<View style={styles.categoryAndIconHolder}>
+						<Icon style={styles.iconCategorySelection} name="ios-circle-outline" size={20}/> 
+						<Text style={styles.categoryText}>Movies and Books</Text>
+					</View>
 					</TouchableHighlight>
 
 					<TouchableHighlight 
 					style={styles.categoryButton}
 					onPress={this._babyCategoryPress.bind(this)}
 					>
-						<Text style={styles.categoryText}><Icon name="ios-circle-outline" size={20}/> Baby & Child</Text>
+					<View style={styles.categoryAndIconHolder}>
+						<Icon style={styles.iconCategorySelection} name="ios-circle-outline" size={20}/> 
+						<Text style={styles.categoryText}>Baby and Child</Text>
+					</View>
 					</TouchableHighlight>
 
 					<TouchableHighlight 
 					style={styles.categoryButton}
 					onPress={this._sportsCategoryPress.bind(this)}
 					>
-						<Text style={styles.categoryText}><Icon name="ios-circle-outline" size={20}/> Sports & Games</Text>
+					<View style={styles.categoryAndIconHolder}>
+						<Icon style={styles.iconCategorySelection} name="ios-circle-outline" size={20}/> 
+						<Text style={styles.categoryText}>Sports and Games</Text>
+					</View>
 					</TouchableHighlight>
 
 					<TouchableHighlight 
 					style={styles.categoryButton}
 					onPress={this._carsCategoryPress.bind(this)}
 					>
-						<Text style={styles.categoryText}><Icon name="ios-circle-outline" size={20}/> Cars & Motors</Text>
+					<View style={styles.categoryAndIconHolder}>
+						<Icon style={styles.iconCategorySelection} name="ios-circle-outline" size={20}/> 
+						<Text style={styles.categoryText}>Cars and Motors</Text>
+					</View>
 					</TouchableHighlight>
 
 					<TouchableHighlight 
 					style={styles.categoryButton}
 					onPress={this._servicesCategoryPress.bind(this)}
 					>
-						<Text style={styles.categoryText}><Icon name="ios-circle-outline" size={20}/> Services</Text>
+					<View style={styles.categoryAndIconHolder}>
+						<Icon style={styles.iconCategorySelection} name="ios-circle-outline" size={20}/> 
+						<Text style={styles.categoryText}>Services</Text>
+					</View>
 					</TouchableHighlight>
 					<Text> {this.state.chosenCategory} </Text>
 				</View>
@@ -200,8 +230,18 @@ var styles = StyleSheet.create({
 	categoryText: {
 		color: '#636363',
 		textAlign: 'left',
-		marginTop: 5,
 		fontSize: 11,
+		marginTop: 9,
+		marginLeft: 5,
+	},
+	categoryAndIconHolder: {
+		flexWrap: 'wrap',
+    	flexDirection:'row',
+	},
+	iconCategorySelection: {
+		marginTop: 5,
+		marginLeft: 5,
+		color: '#eee',
 	}
 
 

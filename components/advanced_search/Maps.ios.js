@@ -13,6 +13,7 @@ import React, {
 } from 'react-native';
 
 var Icon = require('../../node_modules/react-native-vector-icons/Ionicons');
+var RNGeocoder = require('react-native-geocoder');
 
 var regionText = {
 	  latitude: '0',
@@ -20,6 +21,12 @@ var regionText = {
 	  latitudeDelta: '0',
 	  longitudeDelta: '0',
 };
+
+var COUNTRY = {
+	latitude: 0,
+	longitude: 0
+};
+
 
 
 class Maps extends Component {
@@ -33,11 +40,10 @@ class Maps extends Component {
 		        longitude: 0,
 		        latitudeDelta: 0,
 		        longitudeDelta: 0,
-		    }
+		    },
+		    userCountryName: undefined,
 		};
 	}
-
-	
 
 	componentWillMount() {
 	    navigator.geolocation.getCurrentPosition(
@@ -45,31 +51,35 @@ class Maps extends Component {
 
 	        var userLongitude = JSON.stringify(position.coords.longitude);
 	        this.setState({userLongitude});
-	        regionText.longitude = this.state.userLongitude
+	        regionText.longitude = this.state.userLongitude;
+	        COUNTRY.longitude = this.state.userLongitude;
+
 	        var userLatitude = JSON.stringify(position.coords.latitude);
 	        this.setState({userLatitude});
-	        regionText.latitude = this.state.userLatitude
+	        regionText.latitude = this.state.userLatitude;
+	        COUNTRY.longitude = this.state.userLongitude;
+
+	        this.setState({
+		      region: {
+		        latitude: parseFloat(regionText.latitude),
+		        longitude: parseFloat(regionText.longitude),
+		        latitudeDelta: 0.4,
+		        longitudeDelta: 0.4,
+		      },
+		    });
 	        
 	      },
 	      (error) => alert(error.message),
 	      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
 	    );
 
-	    this.setState({
-	      region: {
-	        latitude: parseFloat(regionText.latitude),
-	        longitude: parseFloat(regionText.longitude),
-	        latitudeDelta: 0.4,
-	        longitudeDelta: 0.4,
-	      },
-	    });
+	    
 
+	    
   	}	
 
 
   	_onPressButton(){
-        console.log(regionText.latitude, regionText.longitude)
-
         this.setState({
 	      region: {
 	        latitude: parseFloat(regionText.latitude),
@@ -78,11 +88,38 @@ class Maps extends Component {
 	        longitudeDelta: 0.4,
 	      },
 	    });
-	    console.log(this.state.region, "region state");
+
+	    COUNTRY.longitude = parseFloat(regionText.longitude);
+	    COUNTRY.latitude = parseFloat(regionText.latitude);
+
+	    RNGeocoder.reverseGeocodeLocation(COUNTRY, (err, data) => {
+		  if (err) {
+		    return;
+		  }
+		  console.log(data);
+
+		  this.setState({
+	      		userCountryName: data[0].locality + ", " + data[0].country,
+	    	});
+		});
   	}
 
 	render(){
+
+		var countyName;
+
+    if (this.state.userCountryName) { 
+      countyName = 
+      <Text>{this.state.userCountryName}</Text>
+
+    ;}
+
+    else { countyName = 
+    	<Text>Current Location</Text>
+
+    ;}
 		
+
 		return(
 			<View style={styles.container}>
 			<View style={styles.mapTextLocationHolder}>
@@ -91,15 +128,23 @@ class Maps extends Component {
                 >
 					<Text style={styles.mapCurrentLocationTextHelper}>
 						<Icon name="ios-location" size={20} style={{color:'#6656c8'}}/>
-						<Text style={styles.mapCurrentLocationText}>  Current Location                                        <Icon name="ios-arrow-forward" size={15} style={{color:'#8b8b8b', opacity: 0.4,}}/></Text>
-						 {"\n"}Tap on the map to change the location. 
+						<Text style={styles.mapCurrentLocationText}>  {countyName} <Icon name="ios-arrow-forward" size={15} style={{color:'#8b8b8b', opacity: 0.4, marginLeft: 100,}}/></Text>
+						 {"\n"}Tap here the to change to your current location. 
 					 </Text>
 				</TouchableWithoutFeedback>
 			</View>	
 
 				  <MapView
 			          style={styles.map}
-			          region={this.state.region}
+			          showsUserLocation={true}
+			          followUserLocation={true}
+			          scrollEnabled={true}
+			          rotateEnabled={true}
+			          pitchEnabled={true}
+			          minDelta={0}
+			          maxDelta={3}
+			          showsPointsOfInterest={false}
+			          region={this.props.region}
 			        />
 			</View>
 		);
@@ -113,7 +158,7 @@ var styles = StyleSheet.create({
 	},
 	map: {
 	    height: 150,
-	    width: 400,
+	    width: 380,
 	    marginTop: 5,
 	},
 	mapTextLocationHolder: {

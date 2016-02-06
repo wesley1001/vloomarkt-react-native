@@ -18,6 +18,7 @@ var Discover = require('./components/Discover');
 var Search = require('./components/Search');
 var News = require('./components/News');
 var Sell = require('./components/Sell');
+var Profile = require('./components/Profile');
 
 var Icon = require('./node_modules/react-native-vector-icons/Ionicons');
 
@@ -25,7 +26,7 @@ class vloomarkt extends Component {
   constructor(props){
     super(props);
     this.state = {
-      selectedTab: 'SellTab',
+      selectedTab: 'ProfileTab',
       initialPosition: 'unkown',
     }
   }
@@ -104,13 +105,20 @@ class vloomarkt extends Component {
         </Icon.TabBarItem>
 
         <Icon.TabBarItem
-        selected={this.state.selectedTab === 'MyVlooTab'}
-        onPress={() => this.setTab('MyVlooTab')}
+        selected={this.state.selectedTab === 'ProfileTab'}
+        onPress={() => this.setTab('ProfileTab')}
         title="My Vloo"
         iconName="ios-person">
-        <View style={styles.tabContent}>
-          <Text style={styles.tabText}>My profile</Text>
-        </View>
+        
+        <NavigatorIOS
+          style={{flex: 1}}
+          navigationBarHidden={true}
+          initialRoute={{
+            title: 'Profile',
+            component: Profile
+        }} />
+
+
         </Icon.TabBarItem>
       </TabBarIOS>
       );
