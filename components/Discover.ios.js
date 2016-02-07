@@ -16,8 +16,12 @@ import React, {
 
 var Progress = require('react-native-progress');
 var Icon = require('../node_modules/react-native-vector-icons/Ionicons');
+var Banner = require("react-native-admob");
+var SGListView = require('react-native-sglistview');
+
+var Location = require('./helpers/Location');
+
 var ALL_ITEMS_URL = 'http://localhost:8000/api/item';
-var LoadingIcon = require('./helpers/LoadingIcon');
 
 class Discover extends Component {
 
@@ -58,33 +62,34 @@ class Discover extends Component {
       .then((response) => response.json())
       .then((responseData) => {
         this.setState({
-          dataSource: this.state.dataSource.cloneWithRows(responseData),
+          dataSource: this.state.dataSource.cloneWithRows(responseData.slice(0)),
           loaded: true,
         });
       })
       .done();
   }
 
+  
   render() {
     if (!this.state.loaded) {
       return this.renderLoadingView();
     }
 
+    
     return (
       <View style={styles.container}>
         <View style={styles.header}>
             <Text style={styles.headerTitle}>Discover</Text>
-            <Text style={styles.headerLocation}>OFFERS AROUND MANAMA</Text>
+            <Text style={styles.headerLocation}>OFFERS AROUND <Location /></Text>
         </View>
-        <ScrollView>
-          <ListView
+          <SGListView style={{marginBottom: 45,}}
             contentContainerStyle={styles.list}
             dataSource={this.state.dataSource}
             renderRow={this.renderItem}
-            initialListSize={5}
-            pageSize={5}
+            initialListSize={1}
+            pageSize={2}
+            showsVerticalScrollIndicator={false}
           />
-        </ScrollView>
       </View>
     );
   }
@@ -94,7 +99,7 @@ class Discover extends Component {
       <View>
       <View style={styles.header}>
             <Text style={styles.headerTitle}>Discover</Text>
-            <Text style={styles.headerLocation}>OFFERS AROUND MANAMA</Text>
+            <Text style={styles.headerLocation}>OFFERS AROUND <Location /></Text>
         </View>
         <View style={styles.loadingView}>
           <Text style={styles.loadingText}> Please wait while we fetch offers near you! </Text>
@@ -112,9 +117,11 @@ class Discover extends Component {
   }
 
   renderItem(item) {
-    return (
+      return (
       <View style={styles.row}>
-          <Image style={styles.thumb} source={{uri: item.image_set[0].image}} />
+        <View style={styles.thumbContainer}>
+          <Image style={{width: 210, height:160}} source={{uri: item.image_set[0].image}} />
+        </View>
           <View style={styles.imageTextBackground}>
             <Text style={styles.imageText}>
             {item.title}
@@ -159,9 +166,11 @@ var styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+
   },
   thumbContainer: {
-    flex: 1,
+    borderTopWidth: 3,
+    borderTopColor: 'rgba(55, 40, 126, 0.1)',
   },
   separator: {
     height: 1,
@@ -181,13 +190,11 @@ var styles = StyleSheet.create({
     width: 150,
     height: 150,
     alignItems: 'center',
-    position: 'relative',
   },
   thumb: {
     width: 210,
     height: 164,
     maxHeight: 200,
-
   },
   imageTextBackground: {
     alignItems: 'center',
@@ -195,9 +202,9 @@ var styles = StyleSheet.create({
     height: 30,
     justifyContent: 'center',
     backgroundColor: '#fff',
-    borderBottomColor: '#6656c8',
-    borderBottomWidth: 2,
     padding: 2,
+    borderTopColor: '#eee',
+    borderTopWidth: 1,
 
   },
   imageText: {

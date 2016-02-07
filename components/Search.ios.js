@@ -18,6 +18,8 @@ import React, {
 var Progress = require('react-native-progress');
 var Icon = require('../node_modules/react-native-vector-icons/Ionicons');
 var BackgroundGeolocation = require('react-native-background-geolocation');
+var Banner = require("react-native-admob");
+
 
 var Discover = require('./Discover');
 var News = require('./News');
@@ -138,14 +140,13 @@ class Search extends Component {
                   >
                 <View>
                   <Text style={styles.advanceSearchButtonText}>
-                    <Icon name="ios-settings-strong" size={15}/>  ADVANCED SEARCH                                                   <Icon name="chevron-right" size={18}/>
+                    <Icon name="ios-settings-strong" size={20}/>  ADVANCED SEARCH                                     <Icon name="chevron-right" size={18}/>
                   </Text>
                 </View>
                 </TouchableWithoutFeedback>
                 </View>
             </View>
             <RecentSearch />
-
         </View>
     );
   }
@@ -170,7 +171,7 @@ var styles = StyleSheet.create({
   searchBar: {
     width: 300,
     height: 20,
-    marginTop: 10,
+    marginTop: 8,
     borderRadius: 3,
     backgroundColor: 'white',
     fontSize: 13,
@@ -181,13 +182,13 @@ var styles = StyleSheet.create({
   },
   cancelSearch: {
     textAlign:'center',
-    flex:1    
+    flex:1,
   },
   focused: {
     borderColor: 'blue'
   },
   searchCancelButton: {
-    marginTop: 11,
+    marginTop: 10,
     marginLeft: 9,
   },
   searchCancelButtonText: {
@@ -205,6 +206,7 @@ var styles = StyleSheet.create({
   advanceSearchButtonText: {
     color: 'white',
     fontWeight: 'bold',
+    fontSize: 17,
   },
 
 

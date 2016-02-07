@@ -14,6 +14,7 @@ import React, {
 
 
 var Icon = require('../node_modules/react-native-vector-icons/Ionicons');
+var Banner = require("react-native-admob");
 
 
 class Profile extends Component {
@@ -31,10 +32,10 @@ class Profile extends Component {
         {/* MAIN HEADER - USER INFO & PROFILE PICTURE */}
         <View style={styles.mainHeader}>
             <View style={styles.bgImageWrapper}>
-              <Image source={{uri: 'https://scontent-cdg2-1.xx.fbcdn.net/hphotos-xaf1/v/t1.0-9/11800037_10155988719445096_8510525465155941740_n.jpg?oh=39164c7271ca286089f881641c6bf2a6&oe=57362229'}} style={styles.bgImage} />
+              <Image source={{uri: 'https://scontent-fra3-1.xx.fbcdn.net/hphotos-xpf1/v/t1.0-9/12645175_105783416476080_5516439986353168860_n.jpg?oh=54fb31f09d96e9a4ff4b865409bb18b6&oe=57702A2F'}} style={styles.bgImage} />
             </View>
             <View style={styles.mainHeaderContent}>
-            <Image style={styles.profilePicture}  source={{uri: 'https://scontent-cdg2-1.xx.fbcdn.net/hphotos-xaf1/v/t1.0-9/11800037_10155988719445096_8510525465155941740_n.jpg?oh=39164c7271ca286089f881641c6bf2a6&oe=57362229'}}/>
+            <Image style={styles.profilePicture}  source={{uri: 'https://scontent-fra3-1.xx.fbcdn.net/hphotos-xpf1/v/t1.0-9/12645175_105783416476080_5516439986353168860_n.jpg?oh=54fb31f09d96e9a4ff4b865409bb18b6&oe=57702A2F'}}/>
             <Text style={styles.fullName}>
               Qasim A.
               {"\n"}
@@ -47,7 +48,8 @@ class Profile extends Component {
 
         <ScrollView
   contentContainerStyle={styles.contentContainer}
-  style={styles.scrollView}>
+  style={styles.scrollView}
+  showsVerticalScrollIndicator={false}>
    {/* SHARE HOLDER */}
         <View style={styles.optionsHolder}>
           <View style={styles.shareHolder}>
@@ -166,6 +168,7 @@ class Profile extends Component {
             <View style={styles.divider}></View>
             <TouchableHighlight>
               <View style={styles.vlooMenuItemButton}>
+
                   <Text style={styles.vlooMenuText}>About</Text>
                   <Icon name="ios-arrow-forward" size={15} style={{marginLeft: 301, marginTop: 1, color:'#a7a7a7'}}/>
               </View>
@@ -174,11 +177,17 @@ class Profile extends Component {
         </View>
 
 
+
         <View style={styles.logOutHolder}>
           <TouchableWithoutFeedback>
             <Text style={styles.logOutText}>Logout</Text>
           </TouchableWithoutFeedback>
         </View>
+
+        <Banner.AdMobBanner
+          bannerSize={"smartBannerPortrait"}
+          adUnitID={"ca-app-pub-0032051710031187/7869830279"}
+          didFailToReceiveAdWithError={this.bannerError} />
 
       </ScrollView>
 

@@ -111,6 +111,9 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-image-picker')
+    compile project(':react-native-geocoder')
+    compile project(':react-native-admob')
     compile project(':react-native-mapbox-gl')
     compile project(':react-native-linear-gradient')
     compile project(':react-native-camera')

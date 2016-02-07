@@ -10,6 +10,8 @@ import React, {
   View,
 } from 'react-native';
 
+var Banner = require("react-native-admob");
+
 
 class RecentSearch extends Component {
 
@@ -27,6 +29,11 @@ class RecentSearch extends Component {
 						Your search history will be shown here 
 					</Text>
 				</View>
+				<Banner.AdMobBanner
+				  style={{marginTop: 415,}}
+		          bannerSize={"smartBannerPortrait"}
+		          adUnitID={"ca-app-pub-0032051710031187/7869830279"}
+		          didFailToReceiveAdWithError={this.bannerError} />
 			</View>
 		);
 	}

@@ -3,7 +3,7 @@
 
 #### TO DO
 
-- [ ] Design the first time install landing page.
+- [ ] Design the first time launch landing page.
 - [ ] Create design for the `News` tab.
 - [ ] Show 8 items per loading in the `Discover` tab.
 - [ ] Add reviews & location model to the Django app.

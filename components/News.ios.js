@@ -10,7 +10,8 @@ import React, {
   View,
 } from 'react-native';
 
-var GeoLocation = require('../components/helpers/GeoLocation');
+var FBLogin = require('react-native-facebook-login');
+
 
 class News extends Component {
 
@@ -26,7 +27,7 @@ class News extends Component {
 
 	render(){
 		return(
-      <Text>News</Text>
+      <FBLogin />
 		);
 	}
 }

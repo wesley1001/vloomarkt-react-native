@@ -26,7 +26,7 @@ class vloomarkt extends Component {
   constructor(props){
     super(props);
     this.state = {
-      selectedTab: 'ProfileTab',
+      selectedTab: 'SearchTab',
       initialPosition: 'unkown',
     }
   }

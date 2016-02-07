@@ -16,7 +16,7 @@ import React, {
 var Icon = require('../node_modules/react-native-vector-icons/Ionicons');
 var Maps = require('./advanced_search/Maps');
 var Categories = require('./advanced_search/Categories');
-var RNGeocoder = require('react-native-geocoder');
+var Banner = require("react-native-admob");
 
 
 
@@ -66,8 +66,6 @@ class AdvancedSearch extends Component {
 		        longitudeDelta: 0.4,
 		      },
 		    });
-
-
 	        
 	      },
 	      (error) => alert(error.message),
@@ -120,7 +118,7 @@ class AdvancedSearch extends Component {
 
 
 		        <View style={styles.searchBarSection}>
-		        	<Icon name="ios-search-strong" size={25} style={{color:'#6656c8'}}/>
+		        	<Icon name="ios-search-strong" size={25} style={{color:'#6656c8', marginTop: 3}}/>
 		        	<TextInput style={styles.searchBar}
 		                placeholder={'What are you searching for?'}
 		                placeholderTextColor = '#808080'
@@ -142,6 +140,10 @@ class AdvancedSearch extends Component {
 		        <View style={styles.divider}></View>
 
 		        <Categories />
+
+		        
+
+
 
 	        </View>
 		);
@@ -178,15 +180,16 @@ var styles = StyleSheet.create({
 	mainNavHeader: {
 		color: '#fff',
 		fontWeight: '500',
-		fontSize: 17,
+		fontSize: 14,
 		textAlign: 'center',
 		marginLeft: 90,
-		marginTop: -3,
+		marginTop: 0,
 	},
 	searchButton: {
 		color: '#fff',
 		fontWeight: '700',
-		marginLeft: 60,
+		marginLeft: 56,
+		fontSize: 17,
 	},
 	searchBarSection: {
 		height: 40,
@@ -196,7 +199,7 @@ var styles = StyleSheet.create({
 	    marginBottom: -9,
 	},
 	searchBar: {
-		width: 300,
+		width: 330,
 	    height: 25,
 	    fontSize: 16,
 	    color: '#808080',

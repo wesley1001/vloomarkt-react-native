@@ -18,6 +18,7 @@ var Icon = require('../node_modules/react-native-vector-icons/Ionicons');
 var LinearGradient = require('react-native-linear-gradient');
 var AwesomeButton = require('react-native-awesome-button');
 var UIImagePickerManager = require('NativeModules').UIImagePickerManager;
+var Banner = require("react-native-admob");
 
 
 
@@ -244,6 +245,15 @@ class Sell extends Component {
               <Text style={styles.sellButtonText}>SELL IT</Text>
             </TouchableHighlight>
           </View>
+
+          <View class={styles.adMob}>
+            <Banner.AdMobBanner
+              bannerSize={"smartBannerPortrait"}
+              adUnitID={"ca-app-pub-0032051710031187/7869830279"}
+              didFailToReceiveAdWithError={this.bannerError} />
+          </View>
+
+          
         </View>
       </View>
 		);
@@ -388,6 +398,7 @@ var styles = StyleSheet.create({
     marginTop: 50,
     alignItems: 'center',
     borderRadius: 3,
+    marginBottom: 70,
   },
   sellButton: {
     backgroundColor: '#6656c8',
@@ -402,6 +413,9 @@ var styles = StyleSheet.create({
     borderRadius: 3,
     color: 'white',
   },
+  adMob: {
+    marginTop: 100,
+  }
 
 
 });

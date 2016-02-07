@@ -1,6 +1,9 @@
 package com.vloomarkt;
 
 import com.facebook.react.ReactActivity;
+import com.imagepicker.ImagePickerPackage;
+import com.devfd.RNGeocoder.RNGeocoderPackage;
+import com.sbugert.rnadmob.RNAdMobPackage;
 import com.mapbox.reactnativemapboxgl.ReactNativeMapboxGLPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.lwansbrough.ReactCamera.ReactCamera;
@@ -39,6 +42,9 @@ public class MainActivity extends ReactActivity {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
+        new ImagePickerPackage(),
+        new RNGeocoderPackage(),
+        new RNAdMobPackage(),
         new ReactNativeMapboxGLPackage(),
         new LinearGradientPackage(),
         new ReactCamera(),
