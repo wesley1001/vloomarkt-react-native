@@ -111,6 +111,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-facebook-login')
     compile project(':react-native-image-picker')
     compile project(':react-native-geocoder')
     compile project(':react-native-admob')

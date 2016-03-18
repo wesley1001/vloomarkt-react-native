@@ -12,19 +12,24 @@ import React, {
   TextInput,
   NavigatorIOS,
   TouchableWithoutFeedback,
-  AlertIOS,x
+  AlertIOS,
+  TouchableOpacity,
 } from 'react-native';
 
 var Progress = require('react-native-progress');
-var Icon = require('../node_modules/react-native-vector-icons/Ionicons');
+var Icon = require('react-native-vector-icons/Ionicons');
 var BackgroundGeolocation = require('react-native-background-geolocation');
 var Banner = require("react-native-admob");
+var Actions = require('react-native-router-flux').Actions;
 
 
 var Discover = require('./Discover');
 var News = require('./News');
 var AdvancedSearch = require('./AdvancedSearch')
 var RecentSearch = require('./advanced_search/RecentSearch')
+
+
+
 
 var API_CATEGORY_MAIN_URL = 'http://localhost:8000/api/category/'
 
@@ -65,7 +70,7 @@ class Search extends Component {
           var userLatitude = JSON.stringify(position.coords.latitude);
           this.setState({userLatitude});
           regionText.latitude = this.state.userLatitude
-          
+
         },
         (error) => alert(error.message),
         {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
@@ -80,32 +85,7 @@ class Search extends Component {
         },
       });
 
-    } 
-
-
-
-  _handleAdvanceSearchPress(){
-    this.setState({
-        region: {
-          latitude: parseFloat(regionText.latitude),
-          longitude: parseFloat(regionText.longitude),
-          latitudeDelta: 0.4,
-          longitudeDelta: 0.4,
-        },
-      });
-      this.props.navigator.push({
-          title: "AdvancedSearch",
-          component: AdvancedSearch,
-          passProps: { 
-            searchTerm: this.state.searchTerm,
-            region: this.state.region 
-          },
-      });
     }
-
-  _handCancelSearchPress(){
-    this.props.navigator.popToTop();
-  }
 
   render() {
     return (
@@ -123,20 +103,20 @@ class Search extends Component {
                 clearButtonMode='always'
               />
               <View style={styles.searchCancelButton}>
-              <TouchableWithoutFeedback
-                  onPress={this._handCancelSearchPress.bind(this)}
+              <TouchableOpacity
+                  onPress={Actions.news}
                 >
               <View>
                 <Text style={styles.searchCancelButtonText}>Cancel</Text>
               </View>
-              </TouchableWithoutFeedback>
+              </TouchableOpacity>
               </View>
             </View>
 
             <View style={styles.advanceSearchHolder}>
               <View style={styles.advanceSearchButton}>
                 <TouchableWithoutFeedback
-                    onPress={this._handleAdvanceSearchPress.bind(this)}
+                    onPress={Actions.advancedSearch}
                   >
                 <View>
                   <Text style={styles.advanceSearchButtonText}>

@@ -8,17 +8,40 @@ import React, {
   Text,
   TextInput,
   TouchableWithoutFeedback,
-  TouchableHighlight,
+  TouchableOpacity,
   View,
   AlertIOS,
   Image,
+  PickerIOS,
+  Modal,
 } from 'react-native';
 
-var Icon = require('../node_modules/react-native-vector-icons/Ionicons');
+
+var Icon = require('react-native-vector-icons/Ionicons');
 var LinearGradient = require('react-native-linear-gradient');
 var AwesomeButton = require('react-native-awesome-button');
 var UIImagePickerManager = require('NativeModules').UIImagePickerManager;
 var Banner = require("react-native-admob");
+var PickerItemIOS = PickerIOS.Item;
+
+var InterstitialAdUnitId = 'ca-app-pub-0032051710031187/7410341872';
+
+
+var CATEGORIES = {
+  Everythin: {
+    name: 'Everything',
+  },
+  Fashion: {
+    name: 'Fashion and Accessories',
+  },
+  Automobile: {
+    name: 'Motors and Cars',
+  },
+  Home: {
+    name: 'Home and Garden',
+  },
+};
+
 
 
 
@@ -50,8 +73,13 @@ class Sell extends Component {
         firstImageSource: undefined,
         secondImageSource: undefined,
         thirdImageSource: undefined,
+        cateG: 'Everything',
       };
   	}
+
+  showInterstitial(){
+     AdMob.showInterstitial();
+   }
 
   _onFirstCameraPressButton() {
     UIImagePickerManager.showImagePicker(options, (response) => {
@@ -71,6 +99,7 @@ class Sell extends Component {
         this.setState({
           firstImageSource: source,
         });
+        console.log(this.state.firstImageSource);
       }
     });
   }
@@ -123,8 +152,8 @@ class Sell extends Component {
 
     var imageHolder;
 
-    if (this.state.firstImageSource && !this.state.secondImageSource && !this.state.thirdImageSource) { 
-      imageHolder = 
+    if (this.state.firstImageSource && !this.state.secondImageSource && !this.state.thirdImageSource) {
+      imageHolder =
       <View style={{backgroundColor: 'rgba(0,0,0,0)', justifyContent: 'center', flexDirection: 'row', flexWrap: 'wrap',}}>
         <TouchableWithoutFeedback onPress={this._onFirstCameraPressButton.bind(this)}>
         <Image source={this.state.firstImageSource} style={styles.oneImage} />
@@ -139,9 +168,9 @@ class Sell extends Component {
       </View>
     ;}
     else if (this.state.firstImageSource && this.state.secondImageSource && !this.state.thirdImageSource) {
-      imageHolder = 
+      imageHolder =
       <View style={{backgroundColor: 'rgba(0,0,0,0)', justifyContent: 'center', flexDirection: 'row', flexWrap: 'wrap',}}>
-        
+
         <TouchableWithoutFeedback onPress={this._onFirstCameraPressButton.bind(this)}>
           <Image source={this.state.firstImageSource} style={styles.oneImage} />
         </TouchableWithoutFeedback>
@@ -159,9 +188,9 @@ class Sell extends Component {
       </View>
     ;}
     else if (this.state.firstImageSource && this.state.secondImageSource && this.state.thirdImageSource) {
-      imageHolder = 
+      imageHolder =
       <View style={{backgroundColor: 'rgba(0,0,0,0)', justifyContent: 'center', flexDirection: 'row', flexWrap: 'wrap',}}>
-        
+
         <TouchableWithoutFeedback onPress={this._onFirstCameraPressButton.bind(this)}>
           <Image source={this.state.firstImageSource} style={styles.oneImage} />
         </TouchableWithoutFeedback>
@@ -176,12 +205,12 @@ class Sell extends Component {
 
       </View>
     ;}
-    else { imageHolder = 
-      <TouchableWithoutFeedback style={styles.cameraButton} onPress={this._onFirstCameraPressButton.bind(this)}>
+    else { imageHolder =
+      <TouchableOpacity activeOpacity={0.6} style={styles.cameraButton} onPress={this._onFirstCameraPressButton.bind(this)}>
           <View style={{backgroundColor: 'rgba(0,0,0,0)'}}>
           <Icon name="ios-camera" size={60} style={styles.cameraIcon}/>
       </View>
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     ;}
 
 		return(
@@ -212,9 +241,10 @@ class Sell extends Component {
           <View style={styles.categorySelectionHolder}>
             <TouchableWithoutFeedback>
               <View style={styles.categoryBar}>
+
                 <Text style={styles.categoryText}>Select a category</Text>
+
                 <Icon name="ios-arrow-down" size={20} style={styles.categoryDownIcon}/>
-                <Image source={this.state.avatarSource} />
 
               </View>
             </TouchableWithoutFeedback>
@@ -235,25 +265,19 @@ class Sell extends Component {
                   keyboardType='numbers-and-punctuation'
                 />
               </View>
-            </View>  
+            </View>
           </View>
 
           <View style={styles.divider}></View>
 
           <View style={styles.sellButtonHolder}>
-            <TouchableHighlight style={styles.sellButton}>
+            <TouchableOpacity style={styles.sellButton}
+            activeOpacity={0.8}>
               <Text style={styles.sellButtonText}>SELL IT</Text>
-            </TouchableHighlight>
+            </TouchableOpacity>
           </View>
 
-          <View class={styles.adMob}>
-            <Banner.AdMobBanner
-              bannerSize={"smartBannerPortrait"}
-              adUnitID={"ca-app-pub-0032051710031187/7869830279"}
-              didFailToReceiveAdWithError={this.bannerError} />
-          </View>
 
-          
         </View>
       </View>
 		);
@@ -274,6 +298,7 @@ var styles = StyleSheet.create({
   },
   cameraButton: {
     borderRadius: 29,
+    backgroundColor: 'transparent',
   },
   cameraIcon: {
     width: 70,
@@ -286,7 +311,7 @@ var styles = StyleSheet.create({
     color: '#4c669f'
   },
   plusUploadIcon: {
-    color: '#4c669f',
+    color: '#3e5485',
     alignItems: 'center',
     marginLeft: 28,
     marginTop: 15,
@@ -294,7 +319,7 @@ var styles = StyleSheet.create({
   oneImage: {
     height: 90,
     width: 90,
-    borderColor: '#c8c8c8',
+    borderColor: 'rgba(225,255,225,0.5)',
     borderWidth: 1,
     marginTop: 70,
     marginLeft: 10,
@@ -311,10 +336,10 @@ var styles = StyleSheet.create({
     height: 90,
     width: 90,
     borderWidth: 1,
-    borderColor: '#c8c8c8', 
-    backgroundColor: '#838383', 
-    marginTop: 70, 
-    marginLeft: 10, 
+    borderColor: '#c8c8c8',
+    backgroundColor: 'rgba(174, 174, 174, 0.3)',
+    marginTop: 70,
+    marginLeft: 10,
   },
   formContainer: {
   },
@@ -377,7 +402,7 @@ var styles = StyleSheet.create({
     height: 30,
     width: 200,
     paddingLeft: 4,
-    
+
     color: '#bcbcbc',
   },
   currentCurrency: {
@@ -412,6 +437,7 @@ var styles = StyleSheet.create({
     paddingBottom: 10,
     borderRadius: 3,
     color: 'white',
+    fontWeight: '600',
   },
   adMob: {
     marginTop: 100,

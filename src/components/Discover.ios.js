@@ -15,13 +15,14 @@ import React, {
 } from 'react-native';
 
 var Progress = require('react-native-progress');
-var Icon = require('../node_modules/react-native-vector-icons/Ionicons');
+// var Icon = require('../../node_modules/react-native-vector-icons/Ionicons');
 var Banner = require("react-native-admob");
 var SGListView = require('react-native-sglistview');
 
-var Location = require('./helpers/Location');
+var Location = require('../components/helpers/Location');
 
-var ALL_ITEMS_URL = 'http://localhost:8000/api/item';
+
+var ALL_ITEMS_URL = 'http://dev.ondernemer.io/api/item/';
 
 class Discover extends Component {
 
@@ -34,6 +35,7 @@ class Discover extends Component {
       loaded: false,
       progress: 1,
       indeterminate: true,
+      imageHeight: 160,
     };
   }
 
@@ -41,6 +43,8 @@ class Discover extends Component {
     this.animate();
     this.fetchData();
   }
+
+
 
   animate() {
     var progress = 0;
@@ -58,24 +62,28 @@ class Discover extends Component {
   }
 
   fetchData() {
-    fetch(ALL_ITEMS_URL)
+    fetch('http://ondernemer.io/api/item/')
       .then((response) => response.json())
       .then((responseData) => {
+        console.log(responseData);
         this.setState({
-          dataSource: this.state.dataSource.cloneWithRows(responseData.slice(0)),
+          dataSource: this.state.dataSource.cloneWithRows(responseData),
           loaded: true,
         });
       })
-      .done();
+      .catch((error) => {
+        console.log(error);
+      })
   }
 
-  
+
+
   render() {
     if (!this.state.loaded) {
       return this.renderLoadingView();
     }
 
-    
+
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -112,7 +120,7 @@ class Discover extends Component {
             />
           </View>
       </View>
-      
+
     );
   }
 
@@ -120,7 +128,7 @@ class Discover extends Component {
       return (
       <View style={styles.row}>
         <View style={styles.thumbContainer}>
-          <Image style={{width: 210, height:160}} source={{uri: item.image_set[0].image}} />
+          <Image style={{width: 193, height: 165}} source={{uri: item.image_set[0].image}} />
         </View>
           <View style={styles.imageTextBackground}>
             <Text style={styles.imageText}>
@@ -170,14 +178,14 @@ var styles = StyleSheet.create({
   },
   thumbContainer: {
     borderTopWidth: 3,
-    borderTopColor: 'rgba(55, 40, 126, 0.1)',
+    borderColor: 'rgba(0, 0, 0, 0.05)',
   },
   separator: {
     height: 1,
     backgroundColor: '#CCCCCC',
   },
   list: {
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     flexDirection: 'row',
     flexWrap: 'wrap',
 
@@ -185,6 +193,7 @@ var styles = StyleSheet.create({
   row: {
     justifyContent: 'center',
     margin: 18,
+    marginTop: 23,
     marginBottom: 26,
     padding: 0,
     width: 150,
@@ -192,9 +201,8 @@ var styles = StyleSheet.create({
     alignItems: 'center',
   },
   thumb: {
-    width: 210,
+    width: 200,
     height: 164,
-    maxHeight: 200,
   },
   imageTextBackground: {
     alignItems: 'center',

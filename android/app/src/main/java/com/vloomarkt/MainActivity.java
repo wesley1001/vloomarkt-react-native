@@ -1,6 +1,7 @@
 package com.vloomarkt;
 
 import com.facebook.react.ReactActivity;
+import com.magus.fblogin.FacebookLoginPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.devfd.RNGeocoder.RNGeocoderPackage;
 import com.sbugert.rnadmob.RNAdMobPackage;
@@ -42,6 +43,7 @@ public class MainActivity extends ReactActivity {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
+        new FacebookLoginPackage(),
         new ImagePickerPackage(),
         new RNGeocoderPackage(),
         new RNAdMobPackage(),
