@@ -12,7 +12,7 @@ import React, {
   AlertIOS,
 } from 'react-native';
 
-var Icon = require('../../node_modules/react-native-vector-icons/Ionicons');
+var Icon = require('react-native-vector-icons/Ionicons');
 var RNGeocoder = require('react-native-geocoder');
 
 var regionText = {

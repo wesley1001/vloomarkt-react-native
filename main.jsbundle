@@ -1297,6 +1297,8 @@ var Discover=require('vloomarkt/components/Discover.ios.js');
 var Search=require('vloomarkt/components/Search.ios.js');
 var News=require('vloomarkt/components/News.ios.js');
 var Sell=require('vloomarkt/components/Sell.ios.js');
+var Profile=require('vloomarkt/components/Profile.ios.js');
+var FacebookAuthentication=require('vloomarkt/components/Authentication/FacebookAuthentication.ios.js');
 
 var Icon=require('react-native-vector-icons/Ionicons.js');var 
 
@@ -1304,7 +1306,7 @@ vloomarkt=function(_Component){babelHelpers.inherits(vloomarkt,_Component);
 function vloomarkt(props){babelHelpers.classCallCheck(this,vloomarkt);var _this=babelHelpers.possibleConstructorReturn(this,Object.getPrototypeOf(vloomarkt).call(this,
 props));
 _this.state={
-selectedTab:'SellTab',
+selectedTab:'ProfileTab',
 initialPosition:'unkown'};return _this;}babelHelpers.createClass(vloomarkt,[{key:'setTab',value:function setTab(
 
 
@@ -1376,19 +1378,26 @@ style:{flex:1},
 navigationBarHidden:true,
 initialRoute:{
 title:'News',
-component:News}})),
+component:FacebookAuthentication}})),
 
 
 
 
 
 _reactNative2.default.createElement(Icon.TabBarItem,{
-selected:this.state.selectedTab==='MyVlooTab',
-onPress:function(){return _this2.setTab('MyVlooTab');},
+selected:this.state.selectedTab==='ProfileTab',
+onPress:function(){return _this2.setTab('ProfileTab');},
 title:'My Vloo',
 iconName:'ios-person'},
-_reactNative2.default.createElement(_reactNative.View,{style:styles.tabContent},
-_reactNative2.default.createElement(_reactNative.Text,{style:styles.tabText},'My profile')))));}}]);return vloomarkt;}(_reactNative.Component);
+
+_reactNative2.default.createElement(_reactNative.NavigatorIOS,{
+style:{flex:1},
+navigationBarHidden:true,
+initialRoute:{
+title:'Profile',
+component:Profile}}))));}}]);return vloomarkt;}(_reactNative.Component);
+
+
 
 
 
@@ -58850,8 +58859,13 @@ __d('vloomarkt/components/Discover.ios.js',function(global, require, module, exp
 
 var Progress=require('react-native-progress/index.js');
 var Icon=require('react-native-vector-icons/Ionicons.js');
-var ALL_ITEMS_URL='http://localhost:8000/api/item';
-var LoadingIcon=require('vloomarkt/components/helpers/LoadingIcon.ios.js');var 
+var Banner=require("react-native-admob/index.js");
+var SGListView=require('react-native-sglistview/index.js');
+
+var Location=require('vloomarkt/components/helpers/Location.ios.js');
+
+
+var ALL_ITEMS_URL='http://localhost:8000/api/item';var 
 
 Discover=function(_Component){babelHelpers.inherits(Discover,_Component);
 
@@ -58892,11 +58906,12 @@ fetch(ALL_ITEMS_URL).
 then(function(response){return response.json();}).
 then(function(responseData){
 _this3.setState({
-dataSource:_this3.state.dataSource.cloneWithRows(responseData),
+dataSource:_this3.state.dataSource.cloneWithRows(responseData.slice(0)),
 loaded:true});}).
 
 
 done();}},{key:'render',value:function render()
+
 
 
 {
@@ -58904,18 +58919,20 @@ if(!this.state.loaded){
 return this.renderLoadingView();}
 
 
+
 return (
 _reactNative2.default.createElement(_reactNative.View,{style:styles.container},
 _reactNative2.default.createElement(_reactNative.View,{style:styles.header},
 _reactNative2.default.createElement(_reactNative.Text,{style:styles.headerTitle},'Discover'),
-_reactNative2.default.createElement(_reactNative.Text,{style:styles.headerLocation},'OFFERS AROUND MANAMA')),
+_reactNative2.default.createElement(_reactNative.Text,{style:styles.headerLocation},'OFFERS AROUND ',_reactNative2.default.createElement(Location,null))),
 
-_reactNative2.default.createElement(_reactNative.ScrollView,null,
-_reactNative2.default.createElement(_reactNative.ListView,{
+_reactNative2.default.createElement(SGListView,{style:{marginBottom:45},
 contentContainerStyle:styles.list,
 dataSource:this.state.dataSource,
-renderRow:this.renderItem}))));}},{key:'renderLoadingView',value:function renderLoadingView()
-
+renderRow:this.renderItem,
+initialListSize:1,
+pageSize:2,
+showsVerticalScrollIndicator:false})));}},{key:'renderLoadingView',value:function renderLoadingView()
 
 
 
@@ -58926,7 +58943,7 @@ return (
 _reactNative2.default.createElement(_reactNative.View,null,
 _reactNative2.default.createElement(_reactNative.View,{style:styles.header},
 _reactNative2.default.createElement(_reactNative.Text,{style:styles.headerTitle},'Discover'),
-_reactNative2.default.createElement(_reactNative.Text,{style:styles.headerLocation},'OFFERS AROUND MANAMA')),
+_reactNative2.default.createElement(_reactNative.Text,{style:styles.headerLocation},'OFFERS AROUND ',_reactNative2.default.createElement(Location,null))),
 
 _reactNative2.default.createElement(_reactNative.View,{style:styles.loadingView},
 _reactNative2.default.createElement(_reactNative.Text,{style:styles.loadingText},' Please wait while we fetch offers near you! '),
@@ -58946,7 +58963,9 @@ borderWidth:2}))));}},{key:'renderItem',value:function renderItem(
 item){
 return (
 _reactNative2.default.createElement(_reactNative.View,{style:styles.row},
-_reactNative2.default.createElement(_reactNative.Image,{style:styles.thumb,source:{uri:item.image_set[0].image}}),
+_reactNative2.default.createElement(_reactNative.View,{style:styles.thumbContainer},
+_reactNative2.default.createElement(_reactNative.Image,{style:{width:210,height:160},source:{uri:item.image_set[0].image}})),
+
 _reactNative2.default.createElement(_reactNative.View,{style:styles.imageTextBackground},
 _reactNative2.default.createElement(_reactNative.Text,{style:styles.imageText},
 item.title,
@@ -58992,8 +59011,10 @@ marginBottom:9},
 container:{
 flex:1},
 
+
 thumbContainer:{
-flex:1},
+borderTopWidth:3,
+borderTopColor:'rgba(55, 40, 126, 0.1)'},
 
 separator:{
 height:1,
@@ -59004,6 +59025,7 @@ justifyContent:'center',
 flexDirection:'row',
 flexWrap:'wrap'},
 
+
 row:{
 justifyContent:'center',
 margin:18,
@@ -59011,15 +59033,12 @@ marginBottom:26,
 padding:0,
 width:150,
 height:150,
-alignItems:'center',
-position:'relative'},
-
+alignItems:'center'},
 
 thumb:{
 width:210,
 height:164,
 maxHeight:200},
-
 
 imageTextBackground:{
 alignItems:'center',
@@ -59027,9 +59046,9 @@ width:210,
 height:30,
 justifyContent:'center',
 backgroundColor:'#fff',
-borderBottomColor:'#6656c8',
-borderBottomWidth:2,
-padding:2},
+padding:2,
+borderTopColor:'#eee',
+borderTopWidth:1},
 
 
 imageText:{
@@ -63433,7 +63452,408 @@ return isObjectLike(value)&&isLength(value.length)&&!!typedArrayTags[objectToStr
 
 module.exports=isTypedArray;
 });
-__d('vloomarkt/components/helpers/LoadingIcon.ios.js',function(global, require, module, exports) {  'user strict';var _reactNative=require('react-native/Libraries/react-native/react-native.js');var _reactNative2=babelHelpers.interopRequireDefault(_reactNative);
+__d('react-native-admob/index.js',function(global, require, module, exports) {  var _reactNative=require('react-native/Libraries/react-native/react-native.js');var _reactNative2=babelHelpers.interopRequireDefault(_reactNative);var 
+
+
+
+
+AdMobBanner=function(_React$Component){babelHelpers.inherits(AdMobBanner,_React$Component);
+
+function AdMobBanner(){babelHelpers.classCallCheck(this,AdMobBanner);var _this=babelHelpers.possibleConstructorReturn(this,Object.getPrototypeOf(AdMobBanner).call(this));
+
+_this.onSizeChange=_this.onSizeChange.bind(_this);
+_this.state={
+style:{}};return _this;}babelHelpers.createClass(AdMobBanner,[{key:'onSizeChange',value:function onSizeChange(
+
+
+
+event){var _event$nativeEvent=
+event.nativeEvent;var height=_event$nativeEvent.height;var width=_event$nativeEvent.width;
+this.setState({style:{width:width,height:height}});}},{key:'render',value:function render()
+
+
+{var _props=
+this.props;var adUnitID=_props.adUnitID;var bannerSize=_props.bannerSize;var style=_props.style;var didFailToReceiveAdWithError=_props.didFailToReceiveAdWithError;
+return (
+_reactNative2.default.createElement(_reactNative.View,{style:this.props.style},
+_reactNative2.default.createElement(RNBanner,{
+style:this.state.style,
+onSizeChange:this.onSizeChange.bind(this),
+onAdViewDidReceiveAd:this.props.adViewDidReceiveAd,
+onDidFailToReceiveAdWithError:function(event){return didFailToReceiveAdWithError(event.nativeEvent.error);},
+onAdViewWillPresentScreen:this.props.adViewWillPresentScreen,
+onAdViewWillDismissScreen:this.props.adViewWillDismissScreen,
+onAdViewDidDismissScreen:this.props.adViewDidDismissScreen,
+onAdViewWillLeaveApplication:this.props.adViewWillLeaveApplication,
+adUnitID:adUnitID,
+bannerSize:bannerSize})));}}]);return AdMobBanner;}(_reactNative2.default.Component);
+
+
+
+
+
+AdMobBanner.propTypes=babelHelpers.extends({
+style:_reactNative.View.propTypes.style,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+bannerSize:_reactNative2.default.PropTypes.string,
+
+
+
+
+adUnitID:_reactNative2.default.PropTypes.string,
+
+
+
+
+adViewDidReceiveAd:_reactNative2.default.PropTypes.func,
+didFailToReceiveAdWithError:_reactNative2.default.PropTypes.func,
+adViewWillPresentScreen:_reactNative2.default.PropTypes.func,
+adViewWillDismissScreen:_reactNative2.default.PropTypes.func,
+adViewDidDismissScreen:_reactNative2.default.PropTypes.func,
+adViewWillLeaveApplication:_reactNative2.default.PropTypes.func},
+_reactNative.View.propTypes);
+
+
+AdMobBanner.defaultProps={bannerSize:'smartBannerPortrait',didFailToReceiveAdWithError:function(){}};
+
+var RNBanner=(0,_reactNative.requireNativeComponent)('RNAdMob',AdMobBanner);
+
+var AdMobInterstitial=_reactNative2.default.NativeModules['RNAdMobInterstitial'];
+
+module.exports={AdMobBanner:AdMobBanner,AdMobInterstitial:AdMobInterstitial};
+});
+__d('react-native-sglistview/index.js',function(global, require, module, exports) {  var SGListView=require('react-native-sglistview/lib/SGListView.js');
+
+module.exports=SGListView;
+});
+__d('react-native-sglistview/lib/SGListView.js',function(global, require, module, exports) {  var React=require('react-native/Libraries/react-native/react-native.js');var 
+ListView=React.ListView;var PropTypes=React.PropTypes;var ScrollView=React.ScrollView;
+var SGListViewCell=require('react-native-sglistview/lib/SGListViewCell.js');
+
+var SGListView=React.createClass({displayName:'SGListView',
+
+
+
+
+
+propTypes:babelHelpers.extends({},
+
+ListView.propTypes,{
+
+
+
+
+
+
+
+
+
+renderScrollComponent:React.PropTypes.func,
+
+
+
+
+premptiveLoading:PropTypes.number}),
+
+
+getDefaultProps:function(){
+return {
+premptiveLoading:2};},
+
+
+
+
+
+
+
+componentWillMount:function(){
+
+
+
+this.cellData={
+lastVisibleRow:0};},
+
+
+
+getNativeListView:function(){
+return this.refs.nativeListView;},
+
+
+
+
+
+
+render:function(){
+return (
+React.createElement(ListView,babelHelpers.extends({},this.props,{
+ref:'nativeListView',
+renderScrollComponent:this.renderScrollComponent,
+renderRow:this.renderRow,
+onChangeVisibleRows:this.onChangeVisibleRows})));},
+
+
+
+renderScrollComponent:function(props){
+if(props.renderScrollComponent){
+return props.renderScrollComponent(props);}else 
+{
+return (
+React.createElement(ScrollView,props));}},
+
+
+
+
+renderRow:function(rowData,sectionID,rowID){var _this=this;
+
+var view=this.props.renderRow(rowData,sectionID,rowID);
+
+
+return React.createElement(SGListViewCell,{
+usersView:view,
+ref:function(row){
+
+
+PrivateMethods.captureReferenceFor(_this.cellData,sectionID,rowID,row);}});},
+
+
+
+onChangeVisibleRows:function(visibleRows,changedRows){
+
+PrivateMethods.updateCellsVisibility(this.cellData,changedRows);
+
+
+PrivateMethods.updateCellsPremptively(this.props,this.cellData,visibleRows);
+
+
+if(this.props.onChangeVisibleRows){
+this.props.onChangeVisibleRows(visibleRows,changedRows);}}});
+
+
+
+
+
+
+
+
+
+
+
+var PrivateMethods={
+captureReferenceFor:function(cellData,sectionId,rowId,row){
+if(cellData[sectionId]===undefined){
+cellData[sectionId]={};}
+
+
+cellData[sectionId][rowId]=row;},
+
+
+
+
+
+updateCellsVisibility:function(cellData,changedRows){
+for(var section in changedRows){
+if(changedRows.hasOwnProperty(section)){
+var currentSection=changedRows[section];
+
+for(var row in currentSection){
+if(currentSection.hasOwnProperty(row)){
+var currentCell=cellData[section][row];
+var currentCellVisibility=currentSection[row];
+
+
+if(currentCell&&currentCell.setVisibility){
+currentCell.setVisibility(currentCellVisibility);}}}}}},
+
+
+
+
+
+
+
+
+
+
+
+updateCellsPremptively:function(props,cellData,visibleRows){
+if(!props.premptiveLoading){
+return;}
+
+
+if(!cellData.premptiveLoadedCells){
+cellData.premptiveLoadedCells=[];}
+;
+
+
+var firstVisibleRow,lastVisibleRow,firstVisibleSection,lastVisibleSection;
+for(var section in visibleRows){
+for(var row in visibleRows[section]){
+if(firstVisibleRow===undefined){
+firstVisibleSection=section;
+firstVisibleRow=Number(row);}else 
+{
+lastVisibleSection=section;
+lastVisibleRow=Number(row);}
+
+
+
+
+
+var currentCell=cellData[section][row];
+if(cellData.premptiveLoadedCells){
+var i=cellData.premptiveLoadedCells.indexOf(currentCell);
+if(i>=0){
+cellData.premptiveLoadedCells.splice(i,1);}}
+
+;}
+;}
+;
+
+
+var isScrollingUp=cellData.firstVisibleRow>firstVisibleRow;
+var isScrollingDown=cellData.lastVisibleRow<lastVisibleRow;
+
+var scrollDirectionChanged;
+if(isScrollingUp&&cellData.lastScrollDirection==='down'){
+scrollDirectionChanged=true;}else 
+if(isScrollingDown&&cellData.lastScrollDirection==='up'){
+scrollDirectionChanged=true;}
+
+
+
+if(scrollDirectionChanged){
+var cell;
+while(cell=cellData.premptiveLoadedCells.pop()){
+cell.setVisibility(false);}}
+
+;
+
+
+for(var i=1;i<=props.premptiveLoading;i++){
+var cell;
+
+if(isScrollingUp){
+cell=cellData[firstVisibleSection][firstVisibleRow-i];}else 
+if(isScrollingDown){
+cell=cellData[lastVisibleSection][lastVisibleRow+i];}
+
+
+if(cell){
+cell.setVisibility(true);
+cellData.premptiveLoadedCells.push(cell);}else 
+{
+break;}}
+
+
+
+cellData.firstVisibleRow=firstVisibleRow;
+cellData.lastVisibleRow=lastVisibleRow;
+
+if(isScrollingUp){
+cellData.lastScrollDirection='up';}else 
+if(isScrollingDown){
+cellData.lastScrollDirection='down';}}};
+
+
+
+
+
+module.exports=SGListView;
+});
+__d('react-native-sglistview/lib/SGListViewCell.js',function(global, require, module, exports) {  var React=require('react-native/Libraries/react-native/react-native.js');var 
+Text=React.Text;var View=React.View;
+var PropTypes=React.PropTypes;
+
+var SGListViewCell=React.createClass({displayName:'SGListViewCell',
+
+
+
+
+
+propTypes:{
+
+
+
+usersView:PropTypes.element.isRequired},
+
+
+getInitialState:function(){
+return {
+visibility:true};},
+
+
+
+
+
+
+componentDidMount:function(){
+
+
+this.viewProperties={
+width:0,
+height:0};},
+
+
+
+
+
+
+
+render:function(){
+if(this.state.visibility===false){
+return (
+React.createElement(View,{style:{width:this.viewProperties.width,height:this.viewProperties.height}}));}
+
+
+return (
+React.createElement(View,{onLayout:this.onLayout},
+this.props.usersView));},
+
+
+
+
+onLayout:function(evt){
+
+this.viewProperties.width=evt.nativeEvent.layout.width;
+this.viewProperties.height=evt.nativeEvent.layout.height;},
+
+
+
+
+
+setVisibility:function(visibility){
+if(this.state.visibility==visibility){
+return;}
+
+
+if(visibility==true){
+this.setState({visibility:true});}else 
+{
+this.setState({visibility:false});}}});
+
+
+
+
+module.exports=SGListViewCell;
+});
+__d('vloomarkt/components/helpers/Location.ios.js',function(global, require, module, exports) {  'user strict';var _reactNative=require('react-native/Libraries/react-native/react-native.js');var _reactNative2=babelHelpers.interopRequireDefault(_reactNative);
+
+
+
+
+
 
 
 
@@ -63443,20 +63863,134 @@ __d('vloomarkt/components/helpers/LoadingIcon.ios.js',function(global, require, 
 
 
 var Icon=require('react-native-vector-icons/Ionicons.js');
-var Progress=require('react-native-progress/index.js');var 
+var RNGeocoder=require('react-native-geocoder/index.js');
 
-LoadingIcon=function(_Component){babelHelpers.inherits(LoadingIcon,_Component);
+var regionText={
+latitude:'0',
+longitude:'0',
+latitudeDelta:'0',
+longitudeDelta:'0'};
 
-function LoadingIcon(props){babelHelpers.classCallCheck(this,LoadingIcon);var _this=babelHelpers.possibleConstructorReturn(this,Object.getPrototypeOf(LoadingIcon).call(this,
+
+var COUNTRY={
+latitude:0,
+longitude:0};var 
+
+
+
+
+Location=function(_Component){babelHelpers.inherits(Location,_Component);
+function Location(props){babelHelpers.classCallCheck(this,Location);var _this=babelHelpers.possibleConstructorReturn(this,Object.getPrototypeOf(Location).call(this,
 props));
 _this.state={
-angle:0};return _this;}babelHelpers.createClass(LoadingIcon,[{key:'render',value:function render()
+userLongitude:0,
+userLatitude:0,
+region:{
+latitude:0,
+longitude:0,
+latitudeDelta:0,
+longitudeDelta:0},
+
+userCountryName:undefined};return _this;}babelHelpers.createClass(Location,[{key:'componentWillMount',value:function componentWillMount()
+
+
+
+{var _this2=this;
+navigator.geolocation.getCurrentPosition(
+function(position){
+
+var userLongitude=JSON.stringify(position.coords.longitude);
+_this2.setState({userLongitude:userLongitude});
+regionText.longitude=_this2.state.userLongitude;
+COUNTRY.longitude=_this2.state.userLongitude;
+
+var userLatitude=JSON.stringify(position.coords.latitude);
+_this2.setState({userLatitude:userLatitude});
+regionText.latitude=_this2.state.userLatitude;
+COUNTRY.longitude=_this2.state.userLongitude;
+
+_this2.setState({
+region:{
+latitude:parseFloat(regionText.latitude),
+longitude:parseFloat(regionText.longitude),
+latitudeDelta:0.4,
+longitudeDelta:0.4}});},
+
+
+
+
+function(error){return alert(error.message);},
+{enableHighAccuracy:true,timeout:20000,maximumAge:1000});
+
+
+this.setState({
+region:{
+latitude:parseFloat(regionText.latitude),
+longitude:parseFloat(regionText.longitude),
+latitudeDelta:0.4,
+longitudeDelta:0.4}});
+
+
+
+COUNTRY.longitude=parseFloat(regionText.longitude);
+COUNTRY.latitude=parseFloat(regionText.latitude);
+
+RNGeocoder.reverseGeocodeLocation(COUNTRY,function(err,data){
+if(err){
+return;}
+
+console.log(data);
+
+_this2.setState({
+userCountryName:data[0].locality});});}},{key:'getUserLocationName',value:function getUserLocationName()
+
+
+
+
+
+{var _this3=this;
+this.setState({
+region:{
+latitude:parseFloat(regionText.latitude),
+longitude:parseFloat(regionText.longitude),
+latitudeDelta:0.4,
+longitudeDelta:0.4}});
+
+
+
+COUNTRY.longitude=parseFloat(regionText.longitude);
+COUNTRY.latitude=parseFloat(regionText.latitude);
+
+RNGeocoder.reverseGeocodeLocation(COUNTRY,function(err,data){
+if(err){
+return;}
+
+console.log(data);
+
+_this3.setState({
+userCountryName:data[0].locality});});
+
+
+
+return this.state.userCountryName;}},{key:'render',value:function render()
+
 
 
 {
-return (
-_reactNative2.default.createElement(_reactNative.View,{style:styles.container}));}}]);return LoadingIcon;}(_reactNative.Component);
+var countyName;
 
+if(this.state.userCountryName){
+countyName=
+_reactNative2.default.createElement(_reactNative.Text,null,this.state.userCountryName);}else 
+
+
+
+{countyName=
+_reactNative2.default.createElement(_reactNative.Text,null,'YOU');}
+
+
+return (
+_reactNative2.default.createElement(_reactNative.Text,null,countyName));}}]);return Location;}(_reactNative.Component);
 
 
 
@@ -63464,20 +63998,52 @@ _reactNative2.default.createElement(_reactNative.View,{style:styles.container}))
 
 var styles=_reactNative.StyleSheet.create({
 container:{
-flex:1,
-justifyContent:'center',
-alignItems:'center'},
-
-rotateCard:{
-width:35,
-height:35,
-justifyContent:'center',
-backgroundColor:'transparent'}});
+flex:1}});
 
 
 
 
-module.exports=LoadingIcon;
+module.exports=Location;
+});
+__d('react-native-geocoder/index.js',function(global, require, module, exports) {  var _require=
+
+
+
+require('react-native/Libraries/react-native/react-native.js');var RNGeocoder=_require.NativeModules.RNGeocoder;
+
+var Geocoder={
+
+reverseGeocodeLocation:function(location,callback){
+
+return new Promise(function(resolve,reject){
+
+RNGeocoder.reverseGeocodeLocation(location,function(err){
+callback&&callback(err,null);
+reject(err);},
+function(data){
+callback&&callback(null,data);
+resolve(data);});});},
+
+
+
+
+geocodeAddress:function(address,callback){
+
+return new Promise(function(resolve,reject){
+
+RNGeocoder.geocodeAddress(address,function(err){
+callback&&callback(err,null);
+reject(err);},
+function(data){
+callback&&callback(null,data);
+resolve(data);});});}};
+
+
+
+
+
+
+module.exports=Geocoder;
 });
 __d('vloomarkt/components/Search.ios.js',function(global, require, module, exports) {  'user strict';var _reactNative=require('react-native/Libraries/react-native/react-native.js');var _reactNative2=babelHelpers.interopRequireDefault(_reactNative);
 
@@ -63499,6 +64065,8 @@ __d('vloomarkt/components/Search.ios.js',function(global, require, module, expor
 var Progress=require('react-native-progress/index.js');
 var Icon=require('react-native-vector-icons/Ionicons.js');
 var BackgroundGeolocation=require('react-native-background-geolocation/RNBackgroundGeolocation.ios.js');
+var Banner=require("react-native-admob/index.js");
+
 
 var Discover=require('vloomarkt/components/Discover.ios.js');
 var News=require('vloomarkt/components/News.ios.js');
@@ -63619,14 +64187,13 @@ onPress:this._handleAdvanceSearchPress.bind(this)},
 
 _reactNative2.default.createElement(_reactNative.View,null,
 _reactNative2.default.createElement(_reactNative.Text,{style:styles.advanceSearchButtonText},
-_reactNative2.default.createElement(Icon,{name:'ios-settings-strong',size:15}),'  ADVANCED SEARCH                                                   ',_reactNative2.default.createElement(Icon,{name:'chevron-right',size:18})))))),
+_reactNative2.default.createElement(Icon,{name:'ios-settings-strong',size:20}),'  ADVANCED SEARCH                                     ',_reactNative2.default.createElement(Icon,{name:'chevron-right',size:18})))))),
 
 
 
 
 
 _reactNative2.default.createElement(RecentSearch,null)));}}]);return Search;}(_reactNative.Component);
-
 
 
 
@@ -63651,7 +64218,7 @@ flexDirection:'row'},
 searchBar:{
 width:300,
 height:20,
-marginTop:10,
+marginTop:8,
 borderRadius:3,
 backgroundColor:'white',
 fontSize:13,
@@ -63668,7 +64235,7 @@ focused:{
 borderColor:'blue'},
 
 searchCancelButton:{
-marginTop:11,
+marginTop:10,
 marginLeft:9},
 
 searchCancelButtonText:{
@@ -63685,7 +64252,8 @@ marginBottom:5},
 
 advanceSearchButtonText:{
 color:'white',
-fontWeight:'bold'}});
+fontWeight:'bold',
+fontSize:17}});
 
 
 
@@ -63798,7 +64366,7 @@ RNBackgroundGeolocation.playSound(soundId);}};
 
 module.exports=API;
 });
-__d('vloomarkt/components/News.ios.js',function(global, require, module, exports) {  'user strict';var _reactNative=require('react-native/Libraries/react-native/react-native.js');var _reactNative2=babelHelpers.interopRequireDefault(_reactNative);
+__d('vloomarkt/components/News.ios.js',function(global, require, module, exports) {  'user strict';var _reactNative=require('react-native/Libraries/react-native/react-native.js');var _reactNative2=babelHelpers.interopRequireDefault(_reactNative);var 
 
 
 
@@ -63810,23 +64378,14 @@ __d('vloomarkt/components/News.ios.js',function(global, require, module, exports
 
 
 
-var GeoLocation=require('vloomarkt/components/helpers/GeoLocation.ios.js');var 
-
-News=function(_Component){babelHelpers.inherits(News,_Component);
 
 
-function News(props){babelHelpers.classCallCheck(this,News);var _this=babelHelpers.possibleConstructorReturn(this,Object.getPrototypeOf(News).call(this,
-props));
-_this.state={};return _this;}babelHelpers.createClass(News,[{key:'_CancelSearchPress',value:function _CancelSearchPress()
-
-
-{
-this.refs.news.push(Search);}},{key:'render',value:function render()
-
+News=function(_Component){babelHelpers.inherits(News,_Component);function News(){babelHelpers.classCallCheck(this,News);return babelHelpers.possibleConstructorReturn(this,Object.getPrototypeOf(News).apply(this,arguments));}babelHelpers.createClass(News,[{key:'render',value:function render()
 
 {
 return (
-_reactNative2.default.createElement(_reactNative.Text,null,'News'));}}]);return News;}(_reactNative.Component);
+_reactNative2.default.createElement(_reactNative.View,{style:styles.container},
+_reactNative2.default.createElement(_reactNative.Text,{style:styles.text},' News ')));}}]);return News;}(_reactNative.Component);
 
 
 
@@ -63834,14 +64393,17 @@ _reactNative2.default.createElement(_reactNative.Text,null,'News'));}}]);return 
 
 var styles=_reactNative.StyleSheet.create({
 container:{
-flex:1}});
+flex:1,
+alignItems:'center'},
+
+
+text:{
+marginTop:300}});
 
 
 
 
 module.exports=News;
-});
-__d('vloomarkt/components/helpers/GeoLocation.ios.js',function(global, require, module, exports) {  
 });
 __d('vloomarkt/components/AdvancedSearch.ios.js',function(global, require, module, exports) {  'user strict';var _reactNative=require('react-native/Libraries/react-native/react-native.js');var _reactNative2=babelHelpers.interopRequireDefault(_reactNative);
 
@@ -63861,7 +64423,7 @@ __d('vloomarkt/components/AdvancedSearch.ios.js',function(global, require, modul
 var Icon=require('react-native-vector-icons/Ionicons.js');
 var Maps=require('vloomarkt/components/advanced_search/Maps.ios.js');
 var Categories=require('vloomarkt/components/advanced_search/Categories.ios.js');
-var RNGeocoder=require('react-native-geocoder/index.js');
+var Banner=require("react-native-admob/index.js");
 
 
 
@@ -63909,8 +64471,6 @@ latitude:parseFloat(regionText.latitude),
 longitude:parseFloat(regionText.longitude),
 latitudeDelta:0.4,
 longitudeDelta:0.4}});},
-
-
 
 
 
@@ -63965,7 +64525,7 @@ _reactNative2.default.createElement(_reactNative.Text,{style:styles.searchButton
 
 
 _reactNative2.default.createElement(_reactNative.View,{style:styles.searchBarSection},
-_reactNative2.default.createElement(Icon,{name:'ios-search-strong',size:25,style:{color:'#6656c8'}}),
+_reactNative2.default.createElement(Icon,{name:'ios-search-strong',size:25,style:{color:'#6656c8',marginTop:3}}),
 _reactNative2.default.createElement(_reactNative.TextInput,{style:styles.searchBar,
 placeholder:'What are you searching for?',
 placeholderTextColor:'#808080',
@@ -63987,6 +64547,10 @@ _reactNative2.default.createElement(Maps,{region:this.state.region})),
 _reactNative2.default.createElement(_reactNative.View,{style:styles.divider}),
 
 _reactNative2.default.createElement(Categories,null)));}}]);return AdvancedSearch;}(_reactNative.Component);
+
+
+
+
 
 
 
@@ -64023,15 +64587,16 @@ marginLeft:9},
 mainNavHeader:{
 color:'#fff',
 fontWeight:'500',
-fontSize:17,
+fontSize:14,
 textAlign:'center',
 marginLeft:90,
-marginTop:-3},
+marginTop:0},
 
 searchButton:{
 color:'#fff',
 fontWeight:'700',
-marginLeft:60},
+marginLeft:56,
+fontSize:17},
 
 searchBarSection:{
 height:40,
@@ -64041,7 +64606,7 @@ margin:5,
 marginBottom:-9},
 
 searchBar:{
-width:300,
+width:330,
 height:25,
 fontSize:16,
 color:'#808080',
@@ -64169,7 +64734,7 @@ return;}
 console.log(data);
 
 _this3.setState({
-userCountryName:data[0].country});});}},{key:'render',value:function render()
+userCountryName:data[0].locality+", "+data[0].country});});}},{key:'render',value:function render()
 
 
 
@@ -64206,6 +64771,14 @@ _reactNative2.default.createElement(_reactNative.Text,{style:styles.mapCurrentLo
 
 _reactNative2.default.createElement(_reactNative.MapView,{
 style:styles.map,
+showsUserLocation:true,
+followUserLocation:true,
+scrollEnabled:true,
+rotateEnabled:true,
+pitchEnabled:true,
+minDelta:0,
+maxDelta:3,
+showsPointsOfInterest:false,
 region:this.props.region})));}}]);return Maps;}(_reactNative.Component);
 
 
@@ -64220,7 +64793,7 @@ flex:1},
 
 map:{
 height:150,
-width:400,
+width:380,
 marginTop:5},
 
 mapTextLocationHolder:{
@@ -64244,46 +64817,6 @@ fontSize:8}});
 
 
 module.exports=Maps;
-});
-__d('react-native-geocoder/index.js',function(global, require, module, exports) {  var _require=
-
-
-
-require('react-native/Libraries/react-native/react-native.js');var RNGeocoder=_require.NativeModules.RNGeocoder;
-
-var Geocoder={
-
-reverseGeocodeLocation:function(location,callback){
-
-return new Promise(function(resolve,reject){
-
-RNGeocoder.reverseGeocodeLocation(location,function(err){
-callback&&callback(err,null);
-reject(err);},
-function(data){
-callback&&callback(null,data);
-resolve(data);});});},
-
-
-
-
-geocodeAddress:function(address,callback){
-
-return new Promise(function(resolve,reject){
-
-RNGeocoder.geocodeAddress(address,function(err){
-callback&&callback(err,null);
-reject(err);},
-function(data){
-callback&&callback(null,data);
-resolve(data);});});}};
-
-
-
-
-
-
-module.exports=Geocoder;
 });
 __d('vloomarkt/components/advanced_search/Categories.ios.js',function(global, require, module, exports) {  'user strict';var _reactNative=require('react-native/Libraries/react-native/react-native.js');var _reactNative2=babelHelpers.interopRequireDefault(_reactNative);
 
@@ -64537,7 +65070,7 @@ color:'#eee'}});
 
 module.exports=Categories;
 });
-__d('vloomarkt/components/advanced_search/RecentSearch.ios.js',function(global, require, module, exports) {  'user strict';var _reactNative=require('react-native/Libraries/react-native/react-native.js');var _reactNative2=babelHelpers.interopRequireDefault(_reactNative);var 
+__d('vloomarkt/components/advanced_search/RecentSearch.ios.js',function(global, require, module, exports) {  'user strict';var _reactNative=require('react-native/Libraries/react-native/react-native.js');var _reactNative2=babelHelpers.interopRequireDefault(_reactNative);
 
 
 
@@ -64548,6 +65081,8 @@ __d('vloomarkt/components/advanced_search/RecentSearch.ios.js',function(global, 
 
 
 
+
+var Banner=require("react-native-admob/index.js");var 
 
 
 RecentSearch=function(_Component){babelHelpers.inherits(RecentSearch,_Component);
@@ -64562,10 +65097,15 @@ return (
 _reactNative2.default.createElement(_reactNative.View,{style:styles.container},
 _reactNative2.default.createElement(_reactNative.Text,{style:styles.RecentSearchHeader},' RECENT SEARCH TERMS '),
 _reactNative2.default.createElement(_reactNative.View,{style:styles.recentSearches},
-_reactNative2.default.createElement(_reactNative.Text,{style:styles.recentSearchesTextHolder},'Your search history will be shown here'))));}}]);return RecentSearch;}(_reactNative.Component);
+_reactNative2.default.createElement(_reactNative.Text,{style:styles.recentSearchesTextHolder},'Your search history will be shown here')),
 
 
 
+_reactNative2.default.createElement(Banner.AdMobBanner,{
+style:{marginTop:415},
+bannerSize:"smartBannerPortrait",
+adUnitID:"ca-app-pub-0032051710031187/7869830279",
+didFailToReceiveAdWithError:this.bannerError})));}}]);return RecentSearch;}(_reactNative.Component);
 
 
 
@@ -64613,6 +65153,7 @@ var Icon=require('react-native-vector-icons/Ionicons.js');
 var LinearGradient=require('react-native-linear-gradient/index.ios.js');
 var AwesomeButton=require('react-native-awesome-button/index.js');
 var UIImagePickerManager=require('NativeModules').UIImagePickerManager;
+var Banner=require("react-native-admob/index.js");
 
 
 
@@ -64846,6 +65387,7 @@ _reactNative2.default.createElement(_reactNative.Text,{style:styles.sellButtonTe
 
 
 
+
 var styles=_reactNative.StyleSheet.create({
 container:{
 flex:1,
@@ -64864,7 +65406,7 @@ cameraIcon:{
 width:70,
 height:70,
 borderRadius:34,
-marginTop:70,
+marginTop:75,
 backgroundColor:'#c8c8c8',
 textAlign:'center',
 paddingTop:3,
@@ -64982,7 +65524,8 @@ color:'#7f7f7f'},
 sellButtonHolder:{
 marginTop:50,
 alignItems:'center',
-borderRadius:3},
+borderRadius:3,
+marginBottom:70},
 
 sellButton:{
 backgroundColor:'#6656c8',
@@ -64995,7 +65538,10 @@ paddingRight:150,
 paddingTop:10,
 paddingBottom:10,
 borderRadius:3,
-color:'white'}});
+color:'white'},
+
+adMob:{
+marginTop:100}});
 
 
 
@@ -65176,6 +65722,754 @@ flex:1}});
 
 
 module.exports=AwesomeButton;
+});
+__d('vloomarkt/components/Profile.ios.js',function(global, require, module, exports) {  'user strict';var _reactNative=require('react-native/Libraries/react-native/react-native.js');var _reactNative2=babelHelpers.interopRequireDefault(_reactNative);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var Icon=require('react-native-vector-icons/Ionicons.js');
+var Banner=require("react-native-admob/index.js");
+
+var FBLogin=require('react-native-facebook-login/index.ios.js');
+var FBLoginManager=require('NativeModules').FBLoginManager;
+var FacebookAuthentication=require('vloomarkt/components/Authentication/FacebookAuthentication.ios.js');
+var News=require('vloomarkt/components/News.ios.js');
+
+var FB_PHOTO_WIDTH=200;
+
+var PHOTO_API;
+var PROFILE_INFO_API;var 
+
+
+
+Profile=function(_Component){babelHelpers.inherits(Profile,_Component);
+
+function Profile(props){babelHelpers.classCallCheck(this,Profile);var _this2=babelHelpers.possibleConstructorReturn(this,Object.getPrototypeOf(Profile).call(this,
+props));
+_this2.state={
+loggedIn:false,
+user:"N/A",
+userId:"N/A",
+userToken:"N/A",
+photo:"N/A",
+info:{
+name:"N/A",
+email:"N/A"}};return _this2;}babelHelpers.createClass(Profile,[{key:'componentWillMount',value:function componentWillMount()
+
+
+
+
+{
+console.log("componentWillMount() function running.");
+this.updateView();}},{key:'updateView',value:function updateView()
+
+
+{
+var _this=this;
+FBLoginManager.getCredentials(function(error,data){
+if(!error){
+_this.setState(
+{user:data.credentials,
+userId:data.credentials.userId,
+userToken:data.credentials.token,
+loggedIn:true});
+
+
+PHOTO_API='https://graph.facebook.com/v2.3/'+_this.state.user.userId+'/picture?width='+FB_PHOTO_WIDTH+'&redirect=false&access_token='+_this.state.user.token;
+
+
+fetch(PHOTO_API).
+then(function(response){return response.json();}).
+then(function(responseData){
+_this.setState({
+photo:responseData.data.url});}).
+
+
+done();
+
+PROFILE_INFO_API='https://graph.facebook.com/v2.3/'+_this.state.user.userId+'?fields=name,email&access_token='+_this.state.user.token;
+
+fetch(PROFILE_INFO_API).
+then(function(response){return response.json();}).
+then(function(responseData){
+_this.setState({
+info:{
+name:responseData.name,
+email:responseData.email}});}).
+
+
+
+done();}else 
+{
+_this.setState({user:null,loggedIn:false});}});}},{key:'render',value:function render()
+
+
+
+
+
+{
+
+var _this=this;
+
+var whatToRender;
+
+if(_this.state.loggedIn){
+_this.updateView();
+whatToRender=_reactNative2.default.createElement(_reactNative.View,{style:styles.container},
+
+_reactNative2.default.createElement(_reactNative.View,{style:styles.mainHeader},
+
+_reactNative2.default.createElement(_reactNative.View,{style:styles.bgImageWrapper},
+_reactNative2.default.createElement(_reactNative.Image,{source:{uri:_this.state.photo},style:styles.bgImage})),
+
+_reactNative2.default.createElement(_reactNative.View,{style:styles.mainHeaderContent},
+_reactNative2.default.createElement(_reactNative.Image,{style:styles.profilePicture,source:{uri:_this.state.photo}}),
+_reactNative2.default.createElement(_reactNative.Text,{style:styles.fullName},
+_this.state.info.name,
+"\n",
+_reactNative2.default.createElement(_reactNative.Text,{style:styles.userInformation},'0 sales - 0 purchases - since 16/02/14')))),
+
+
+
+
+
+
+
+
+_reactNative2.default.createElement(_reactNative.ScrollView,{
+contentContainerStyle:styles.contentContainer,
+showsVerticalScrollIndicator:false},
+
+_reactNative2.default.createElement(_reactNative.View,{style:styles.optionsHolder},
+_reactNative2.default.createElement(_reactNative.View,{style:styles.shareHolder},
+_reactNative2.default.createElement(_reactNative.Text,{style:styles.shareTitle},'SHARE VLOO & INVITE YOUR FRIENDS'),
+_reactNative2.default.createElement(_reactNative.View,{style:styles.shareIconsHolder},
+_reactNative2.default.createElement(_reactNative.Image,{source:{uri:'facebook'},style:{width:35,height:35,marginRight:8}}),
+_reactNative2.default.createElement(_reactNative.Image,{source:{uri:'twitter'},style:{width:35,height:35,marginRight:8}}),
+_reactNative2.default.createElement(_reactNative.Image,{source:{uri:'instagram'},style:{width:35,height:35,marginRight:8}}),
+_reactNative2.default.createElement(_reactNative.Image,{source:{uri:'whatsapp'},style:{width:35,height:35,marginRight:8}}),
+_reactNative2.default.createElement(_reactNative.Image,{source:{uri:'email'},style:{width:35,height:35,marginRight:8}})))),
+
+
+
+
+
+
+_reactNative2.default.createElement(_reactNative.View,{style:styles.userMenuHolder},
+
+_reactNative2.default.createElement(_reactNative.View,{style:styles.menuItemHolder},
+_reactNative2.default.createElement(_reactNative.TouchableHighlight,null,
+_reactNative2.default.createElement(_reactNative.View,{style:styles.menuItemButton},
+_reactNative2.default.createElement(_reactNative.Image,{source:{uri:'cart'},style:{width:45,height:45,marginRight:10,marginTop:-4}}),
+_reactNative2.default.createElement(_reactNative.Text,{style:styles.menuButtonTitle},'Items you are selling',
+
+"\n",
+_reactNative2.default.createElement(_reactNative.Text,{style:styles.menuButtonSubtitle},'A list of all items that you are offering to sell')),
+
+
+
+_reactNative2.default.createElement(Icon,{name:'ios-arrow-forward',size:26,style:{marginLeft:50,marginTop:5,color:'#a7a7a7'}}))),
+
+
+_reactNative2.default.createElement(_reactNative.View,{style:styles.divider})),
+
+
+_reactNative2.default.createElement(_reactNative.View,{style:styles.menuItemHolder},
+_reactNative2.default.createElement(_reactNative.TouchableHighlight,null,
+_reactNative2.default.createElement(_reactNative.View,{style:styles.menuItemButton},
+_reactNative2.default.createElement(_reactNative.Image,{source:{uri:'review-star-menu-icon'},style:{width:45,height:45,marginRight:10,marginTop:-4}}),
+_reactNative2.default.createElement(_reactNative.Text,{style:styles.menuButtonTitle},'Your reviews',
+
+"\n",
+_reactNative2.default.createElement(_reactNative.Text,{style:styles.menuButtonSubtitle},'You haven\'t got any reviews yet')),
+
+
+
+_reactNative2.default.createElement(Icon,{name:'ios-arrow-forward',size:26,style:{marginLeft:115,marginTop:5,color:'#a7a7a7'}}))),
+
+
+_reactNative2.default.createElement(_reactNative.View,{style:styles.divider})),
+
+
+_reactNative2.default.createElement(_reactNative.View,{style:styles.menuItemHolder},
+_reactNative2.default.createElement(_reactNative.TouchableHighlight,null,
+_reactNative2.default.createElement(_reactNative.View,{style:styles.menuItemButton},
+_reactNative2.default.createElement(_reactNative.Image,{source:{uri:'settings-cog-icon'},style:{width:45,height:45,marginRight:10,marginTop:-4}}),
+_reactNative2.default.createElement(_reactNative.Text,{style:styles.menuButtonTitle},'Settings',
+
+"\n",
+_reactNative2.default.createElement(_reactNative.Text,{style:styles.menuButtonSubtitle},'Change profile image & profile settings')),
+
+
+
+_reactNative2.default.createElement(Icon,{name:'ios-arrow-forward',size:26,style:{marginLeft:75,marginTop:5,color:'#a7a7a7'}}))))),
+
+
+
+
+
+
+
+
+_reactNative2.default.createElement(_reactNative.View,{style:styles.secondMenuHolder},
+_reactNative2.default.createElement(_reactNative.View,{style:styles.menuItemHolder},
+_reactNative2.default.createElement(_reactNative.TouchableHighlight,null,
+_reactNative2.default.createElement(_reactNative.View,{style:styles.menuItemButton},
+_reactNative2.default.createElement(_reactNative.Image,{source:{uri:'premium-icon'},style:{width:45,height:45,marginRight:10,marginTop:-4}}),
+_reactNative2.default.createElement(_reactNative.Text,{style:styles.menuButtonTitle},'Premium features',
+
+"\n",
+_reactNative2.default.createElement(_reactNative.Text,{style:styles.menuButtonSubtitle},'Promote your item')),
+
+
+
+_reactNative2.default.createElement(Icon,{name:'ios-arrow-forward',size:26,style:{marginLeft:163,marginTop:5,color:'#a7a7a7'}}))))),
+
+
+
+
+
+
+
+
+_reactNative2.default.createElement(_reactNative.View,{style:styles.vlooMenuHolder},
+_reactNative2.default.createElement(_reactNative.View,{style:styles.vlooMenuItemHolder},
+_reactNative2.default.createElement(_reactNative.TouchableHighlight,null,
+_reactNative2.default.createElement(_reactNative.View,{style:styles.vlooMenuItemButton},
+_reactNative2.default.createElement(_reactNative.Text,{style:styles.vlooMenuText},'Feedback'),
+_reactNative2.default.createElement(Icon,{name:'ios-arrow-forward',size:15,style:{marginLeft:277,marginTop:1,color:'#a7a7a7'}}))),
+
+
+
+_reactNative2.default.createElement(_reactNative.View,{style:styles.divider}),
+_reactNative2.default.createElement(_reactNative.TouchableHighlight,null,
+_reactNative2.default.createElement(_reactNative.View,{style:styles.vlooMenuItemButton},
+_reactNative2.default.createElement(_reactNative.Text,{style:styles.vlooMenuText},'Help'),
+_reactNative2.default.createElement(Icon,{name:'ios-arrow-forward',size:15,style:{marginLeft:310,marginTop:1,color:'#a7a7a7'}}))),
+
+
+_reactNative2.default.createElement(_reactNative.View,{style:styles.divider}),
+_reactNative2.default.createElement(_reactNative.TouchableHighlight,null,
+_reactNative2.default.createElement(_reactNative.View,{style:styles.vlooMenuItemButton},
+_reactNative2.default.createElement(_reactNative.Text,{style:styles.vlooMenuText},'Terms and Conditions'),
+_reactNative2.default.createElement(Icon,{name:'ios-arrow-forward',size:15,style:{marginLeft:201,marginTop:1,color:'#a7a7a7'}}))),
+
+
+_reactNative2.default.createElement(_reactNative.View,{style:styles.divider}),
+_reactNative2.default.createElement(_reactNative.TouchableHighlight,null,
+_reactNative2.default.createElement(_reactNative.View,{style:styles.vlooMenuItemButton},
+
+_reactNative2.default.createElement(_reactNative.Text,{style:styles.vlooMenuText},'About'),
+_reactNative2.default.createElement(Icon,{name:'ios-arrow-forward',size:15,style:{marginLeft:301,marginTop:1,color:'#a7a7a7'}}))))),
+
+
+
+
+
+_reactNative2.default.createElement(FacebookAuthentication,null),
+
+_reactNative2.default.createElement(Banner.AdMobBanner,{
+style:{marginBottom:47},
+bannerSize:"smartBannerPortrait",
+adUnitID:"ca-app-pub-0032051710031187/7869830279",
+didFailToReceiveAdWithError:this.bannerError})));}else 
+
+
+
+{
+_this.updateView();
+whatToRender=
+_reactNative2.default.createElement(_reactNative.View,null,
+_reactNative2.default.createElement(FacebookAuthentication,null),
+_reactNative2.default.createElement(_reactNative.Text,null,'not logged in'));}
+
+
+
+
+return (
+
+_reactNative2.default.createElement(_reactNative.View,{style:styles.container},
+whatToRender));}}]);return Profile;}(_reactNative.Component);
+
+
+
+
+
+
+
+var styles=_reactNative.StyleSheet.create({
+container:{
+flex:1,
+backgroundColor:'#eeeeee'},
+
+mainHeader:{
+backgroundColor:'rgba(102, 86, 200, 0.6)',
+height:160},
+
+bgImageWrapper:{
+position:'absolute',
+top:0,bottom:0,left:0,right:0},
+
+bgImage:{
+flex:1,
+opacity:0.1,
+height:160,
+width:400},
+
+mainHeaderContent:{
+marginTop:70,
+flexDirection:'row',
+flexWrap:'wrap',
+justifyContent:'center'},
+
+fullName:{
+fontWeight:'bold',
+fontSize:15,
+color:'#fff',
+backgroundColor:'transparent'},
+
+userInformation:{
+fontSize:13,
+fontWeight:'normal',
+backgroundColor:'transparent'},
+
+profilePicture:{
+marginTop:-20,
+width:80,
+height:80,
+backgroundColor:'#eee',
+marginRight:10,
+borderRadius:38,
+borderColor:'rgba(255, 255, 255, 0.5)',
+borderWidth:3},
+
+optionsHolder:{
+flex:1},
+
+shareHolder:{
+marginTop:0,
+alignItems:'center'},
+
+shareTitle:{
+fontWeight:'500',
+fontSize:13,
+marginBottom:4,
+letterSpacing:2},
+
+shareIconsHolder:{
+flexDirection:'row',
+flexWrap:'wrap'},
+
+mainMenu:{
+flex:1,
+paddingTop:-40,
+backgroundColor:'#fff',
+borderTopColor:'#c2c2c2',
+borderTopWidth:1,
+height:100},
+
+userMenuHolder:{
+alignItems:'center',
+backgroundColor:'white',
+height:178,
+marginTop:25,
+borderTopWidth:1,
+borderTopColor:'#c2c2c2',
+borderBottomWidth:1,
+borderBottomColor:'#c2c2c2',
+flex:1},
+
+secondMenuHolder:{
+alignItems:'center',
+backgroundColor:'white',
+height:58,
+marginTop:25,
+borderTopWidth:1,
+borderTopColor:'#c2c2c2',
+borderBottomWidth:1,
+borderBottomColor:'#c2c2c2',
+flex:1},
+
+divider:{
+borderBottomColor:'#cfcfcf',
+borderBottomWidth:1},
+
+menuItemHolder:{
+height:50,
+width:380,
+marginBottom:6},
+
+menuItemButton:{
+marginLeft:10,
+marginTop:10,
+flexDirection:'row',
+flexWrap:'wrap',
+justifyContent:'flex-start',
+marginBottom:4},
+
+menuButtonTitle:{
+fontWeight:'500',
+fontSize:14},
+
+menuButtonSubtitle:{
+fontWeight:'normal',
+fontSize:11},
+
+vlooMenuHolder:{
+alignItems:'center',
+backgroundColor:'white',
+height:110,
+marginTop:25,
+borderTopWidth:1,
+borderTopColor:'#c2c2c2',
+borderBottomWidth:1,
+borderBottomColor:'#c2c2c2',
+flex:1},
+
+vlooMenuItemHolder:{
+height:50,
+width:380,
+marginBottom:6},
+
+vlooMenuItemButton:{
+marginLeft:10,
+marginTop:5,
+flexDirection:'row',
+flexWrap:'wrap',
+justifyContent:'flex-start',
+marginBottom:4},
+
+vlooMenuText:{
+fontSize:13,
+fontWeight:'600'},
+
+logOutHolder:{
+flex:1,
+marginTop:10,
+alignItems:'center',
+marginBottom:20},
+
+logOutText:{
+fontWeight:'500',
+fontSize:15}});
+
+
+
+
+
+
+module.exports=Profile;
+});
+__d('react-native-facebook-login/index.ios.js',function(global, require, module, exports) {  var React=require('react-native/Libraries/react-native/react-native.js');var 
+
+View=
+
+
+
+
+
+
+React.View;var StyleSheet=React.StyleSheet;var PropTypes=React.PropTypes;var NativeModules=React.NativeModules;var requireNativeComponent=React.requireNativeComponent;var NativeMethodsMixin=React.NativeMethodsMixin;var DeviceEventEmitter=React.DeviceEventEmitter;var 
+
+FBLoginManager=NativeModules.FBLoginManager;
+
+var FBLogin=React.createClass({displayName:'FBLogin',
+statics:{
+Events:FBLoginManager.Events},
+
+
+propTypes:{
+style:View.propTypes.style,
+permissions:PropTypes.array,
+loginBehavior:PropTypes.number,
+onLogin:PropTypes.func,
+onLogout:PropTypes.func,
+onLoginFound:PropTypes.func,
+onLoginNotFound:PropTypes.func,
+onError:PropTypes.func,
+onCancel:PropTypes.func,
+onPermissionsMissing:PropTypes.func},
+
+
+getInitialState:function(){
+return {
+credentials:null,
+subscriptions:[]};},
+
+
+
+mixins:[NativeMethodsMixin],
+
+componentWillMount:function(){
+var _this=this;
+var subscriptions=this.state.subscriptions;
+
+
+
+
+Object.keys(FBLoginManager.Events).forEach(function(event){
+subscriptions.push(DeviceEventEmitter.addListener(
+FBLoginManager.Events[event],
+function(eventData){
+
+var eventHandler=_this.props["on"+event];
+eventHandler&&eventHandler(eventData);}));});
+
+
+
+
+
+this.setState({subscriptions:subscriptions});},
+
+
+componentWillUnmount:function(){
+var subscriptions=this.state.subscriptions;
+subscriptions.forEach(function(subscription){
+subscription.remove();});},
+
+
+
+componentDidMount:function(){
+var _this=this;
+FBLoginManager.getCredentials(function(error,data){
+if(!_this.isMounted())return;
+if(!error){
+_this.setState({credentials:data.credentials});}else 
+{
+_this.setState({credentials:null});}});},
+
+
+
+
+render:function(){
+var props=babelHelpers.extends({},
+this.props,{
+style:[styles.base,this.props.style]});
+
+
+return React.createElement(RCTFBLogin,props);}});
+
+
+
+var RCTFBLogin=requireNativeComponent('RCTFBLogin',FBLogin);
+
+var styles=StyleSheet.create({
+base:{
+width:175,
+height:30}});
+
+
+
+module.exports=FBLogin;
+});
+__d('vloomarkt/components/Authentication/FacebookAuthentication.ios.js',function(global, require, module, exports) {  'user strict';var _reactNative=require('react-native/Libraries/react-native/react-native.js');var _reactNative2=babelHelpers.interopRequireDefault(_reactNative);
+
+
+
+
+
+
+
+
+
+
+
+
+var FBLogin=require('react-native-facebook-login/index.ios.js');
+var FBLoginManager=require('NativeModules').FBLoginManager;
+
+
+var FB_PHOTO_WIDTH=200;
+
+
+var FacebookAuthentication=_reactNative2.default.createClass({displayName:'FacebookAuthentication',
+getInitialState:function(){
+return {
+user:null,
+loggedIn:false};},
+
+
+
+componentWillMount:function(){
+this.updateView();},
+
+
+updateView:function(){
+var _this=this;
+FBLoginManager.getCredentials(function(error,data){
+if(!error){
+_this.setState({user:data.credentials,loggedIn:true});}else 
+
+{
+_this.setState({user:null,loggedIn:false});}});},
+
+
+
+
+render:function(){
+var _this=this;
+var user=this.state.user;
+
+return (
+_reactNative2.default.createElement(_reactNative.View,{style:styles.loginContainer},
+_reactNative2.default.createElement(FBLogin,{style:{marginBottom:10},
+permissions:["email","user_friends"],
+onLogin:function(data){
+console.log("Logged in!");
+console.log(data);
+_this.setState({user:data.credentials});},
+
+onLogout:function(){
+console.log("Logged out.");
+_this.setState({user:null});},
+
+onLoginFound:function(data){
+console.log("Existing login found.");
+console.log(data);
+_this.setState({user:data.credentials});},
+
+onLoginNotFound:function(){
+console.log("No user logged in.");
+_this.setState({user:null});},
+
+
+onError:function(data){
+console.log("ERROR");
+console.log(data);},
+
+onCancel:function(){
+console.log("User cancelled.");},
+
+onPermissionsMissing:function(data){
+console.log("Check permissions!");
+console.log(data);}})));}});
+
+
+
+
+
+
+
+var Photo=_reactNative2.default.createClass({displayName:'Photo',
+propTypes:{
+user:_reactNative2.default.PropTypes.object.isRequired},
+
+
+getInitialState:function(){
+return {
+photo:null};},
+
+
+
+componentWillMount:function(){
+var _this=this;
+var user=this.props.user;
+var api='https://graph.facebook.com/v2.3/'+user.userId+'/picture?width='+FB_PHOTO_WIDTH+'&redirect=false&access_token='+user.token;
+
+fetch(api).
+then(function(response){return response.json();}).
+then(function(responseData){
+_this.setState({
+photo:{
+url:responseData.data.url,
+height:responseData.data.height,
+width:responseData.data.width}});}).
+
+
+
+done();},
+
+
+render:function(){
+var photo=this.state.photo;
+
+return (
+_reactNative2.default.createElement(_reactNative.View,{style:styles.bottomBump},
+
+_reactNative2.default.createElement(_reactNative.Image,{
+style:styles.profilePhoto,
+source:{uri:photo&&photo.url}})));}});
+
+
+
+
+
+
+var Info=_reactNative2.default.createClass({displayName:'Info',
+propTypes:{
+user:_reactNative2.default.PropTypes.object.isRequired},
+
+
+getInitialState:function(){
+return {
+info:null};},
+
+
+
+componentWillMount:function(){
+var _this=this;
+var user=this.props.user;
+var api='https://graph.facebook.com/v2.3/'+user.userId+'?fields=name,email&access_token='+user.token;
+
+fetch(api).
+then(function(response){return response.json();}).
+then(function(responseData){
+_this.setState({
+info:{
+name:responseData.name,
+email:responseData.email}});}).
+
+
+
+done();},
+
+
+render:function(){
+var info=this.state.info;
+
+return (
+_reactNative2.default.createElement(_reactNative.View,{style:styles.bottomBump},
+_reactNative2.default.createElement(_reactNative.Text,null,info&&this.props.user.userId),
+_reactNative2.default.createElement(_reactNative.Text,null,info&&info.name),
+_reactNative2.default.createElement(_reactNative.Text,null,info&&info.email)));}});
+
+
+
+
+
+var styles=_reactNative.StyleSheet.create({
+loginContainer:{
+flex:1,
+alignItems:'center',
+justifyContent:'center',
+backgroundColor:'#e3e3e3'},
+
+bottomBump:{
+marginBottom:15},
+
+profilePhoto:{
+width:120,
+height:120,
+borderRadius:48,
+borderColor:'rgba(255,255,255,0.3)',
+borderWidth:3}});
+
+
+
+
+
+module.exports=FacebookAuthentication;
 });
 ;require("InitializeJavaScriptAppEngine");
 ;require("vloomarkt/index.ios.js");

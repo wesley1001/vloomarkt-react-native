@@ -12,7 +12,7 @@ import React, {
   AlertIOS,
 } from 'react-native';
 
-var Icon = require('../../node_modules/react-native-vector-icons/Ionicons');
+var Icon = require('react-native-vector-icons/Ionicons');
 var RNGeocoder = require('react-native-geocoder');
 
 var regionText = {
@@ -67,7 +67,7 @@ class Location extends Component {
 		        longitudeDelta: 0.4,
 		      },
 		    });
-	        
+
 	      },
 	      (error) => alert(error.message),
 	      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
@@ -89,13 +89,11 @@ class Location extends Component {
 		  if (err) {
 		    return;
 		  }
-		  console.log(data);
-
 		  this.setState({
 	      		userCountryName: data[0].locality,
 	    	});
 		});
-	    
+
   	}
 
   	getUserLocationName(){
@@ -129,13 +127,13 @@ class Location extends Component {
 	render(){
 		var countyName;
 
-	    if (this.state.userCountryName) { 
-	      countyName = 
+	    if (this.state.userCountryName) {
+	      countyName =
 	      <Text>{this.state.userCountryName}</Text>
 
 	    ;}
 
-	    else { countyName = 
+	    else { countyName =
 	    	<Text>YOU</Text>
 
 	    ;}

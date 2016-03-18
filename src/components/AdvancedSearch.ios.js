@@ -7,16 +7,18 @@ import React, {
   NavigatorIOS,
   Text,
   TouchableWithoutFeedback,
+  TouchableOpacity,
   View,
   TextInput,
   MapView,
 
 } from 'react-native';
 
-var Icon = require('../node_modules/react-native-vector-icons/Ionicons');
+var Icon = require('react-native-vector-icons/Ionicons');
 var Maps = require('./advanced_search/Maps');
 var Categories = require('./advanced_search/Categories');
 var Banner = require("react-native-admob");
+var Actions = require('react-native-router-flux').Actions;
 
 
 
@@ -66,14 +68,14 @@ class AdvancedSearch extends Component {
 		        longitudeDelta: 0.4,
 		      },
 		    });
-	        
+
 	      },
 	      (error) => alert(error.message),
 	      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
 	    );
 
-	    
-  	}	
+
+  	}
 
 
 
@@ -89,31 +91,31 @@ class AdvancedSearch extends Component {
 		return(
 			<View style={styles.container}>
 
-				<View style={styles.header}></View> 
+				<View style={styles.header}></View>
 
 				<View style={styles.mainNav}>
 	                <View style={styles.goBackToSearchButton}>
-		            	<TouchableWithoutFeedback
-		                	onPress={this._GoBackToSearchPress.bind(this)}
-		            	>
+		            	<TouchableOpacity
+		                	onPress={Actions.pop}
+		                	activeOpacity={0.8}>
 			            	<View>
 			            		<Text style={styles.searchCancelButtonText}>
 			            			<Icon name="ios-arrow-left" size={30} style={{color:'#fff', marginTop: 10}}/>
 			            		</Text>
 			            	</View>
-		            	</TouchableWithoutFeedback>
+		            	</TouchableOpacity>
 	              	</View>
 	              	<Text style={styles.mainNavHeader}> Advanced Search</Text>
 
-	              	<TouchableWithoutFeedback
+	              	<TouchableOpacity
 		                	onPress={this._SearchPress.bind(this)}
-		            	>
+		                	activeOpacity={0.8}>
 			            	<View>
 			            		<Text style={styles.searchButton}>
 			            			Search
 			            		</Text>
 			            	</View>
-		            	</TouchableWithoutFeedback>
+		            	</TouchableOpacity>
 		        </View>
 
 
@@ -128,12 +130,12 @@ class AdvancedSearch extends Component {
 		                value={this.state.searchTerm}
 		                clearButtonMode='always'
 		              />
-		             
+
 		        </View>
 
 		        <View style={styles.divider}></View>
 
-		        <View style={styles.location}> 
+		        <View style={styles.location}>
 		        	<Maps region={this.state.region}/>
 		        </View>
 
@@ -141,7 +143,7 @@ class AdvancedSearch extends Component {
 
 		        <Categories />
 
-		        
+
 
 
 
@@ -217,9 +219,7 @@ var styles = StyleSheet.create({
 		marginTop: 5,
 		alignItems: 'center'
 	},
-	maps: {
-		
-	}
+
 
 });
 

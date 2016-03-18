@@ -9,35 +9,127 @@ import React, {
   View,
   Image,
   ScrollView,
-  TouchableWithoutFeedback,
+  TouchableOpacity,
 } from 'react-native';
 
 
-var Icon = require('../node_modules/react-native-vector-icons/Ionicons');
+var Icon = require('react-native-vector-icons/Ionicons');
 var Banner = require("react-native-admob");
+
+var FBLogin = require('react-native-facebook-login');
+var FBLoginManager = require('NativeModules').FBLoginManager;
+var FacebookAuthentication = require('./Authentication/FacebookAuthentication');
+var News = require('./News');
+
+var FB_PHOTO_WIDTH = 200;
+
+var PHOTO_API;
+var PROFILE_INFO_API;
+
 
 
 class Profile extends Component {
 
-
 	constructor(props) {
-      super(props);
-      this.state = {};
-  	}
+    super(props);
+    this.state = {
+      loggedIn: false,
+      user: null,
+      userId: null,
+      token: null,
+      photo: null,
+      info: {
+        name: null,
+        email: null,
+        birthday: null,
+      },
+    }
+  }
+
+  componentWillMount(){
+    var _this = this;
+    FBLoginManager.getCredentials(function(error, data){
+      if (!error ) {
+        _this.setState(
+          { user : data.credentials,
+            userId: data.credentials.userId,
+            userToken: data.credentials.token,
+            loggedIn: true,
+          });
+
+        PHOTO_API = `https://graph.facebook.com/v2.3/${_this.state.user.userId}/picture?width=${FB_PHOTO_WIDTH}&redirect=false&access_token=${_this.state.user.token}`
+
+
+            fetch(PHOTO_API)
+          .then((response) => response.json())
+          .then((responseData) => {
+            _this.setState({
+              photo : responseData.data.url,
+            });
+          })
+          .done();
+
+        PROFILE_INFO_API = `https://graph.facebook.com/v2.3/${_this.state.user.userId}?fields=name,email&access_token=${_this.state.user.token}`;
+
+        fetch(PROFILE_INFO_API)
+          .then((response) => response.json())
+          .then((responseData) => {
+            _this.setState({
+              info : {
+                name : responseData.name,
+                email: responseData.email,
+                birthday: responseData.birthday,
+              },
+            });
+
+            console.log(_this.state.userId, _this.state.info.email, _this.state.info.name, _this.state.userToken,);
+          })
+          .done();
+
+
+      } else {
+        _this.setState({ user : null, loggedIn: false, });
+      }
+    });
+  }
+
+  createNewUserFromFacebook(){
+   fetch('http://localhost:8000/api/user/create/', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+          "username": _this.state.userId,
+          "email": _this.state.info.email,
+          "password": _this.state.userId,
+          "name": _this.state.info.name,
+          "facebookID": _this.state.userId,
+          "facebookToken": _this.state.userToken
+      })
+    }).done();
+  }
+
 
 	render(){
-		return(
-      <View style={styles.container}>
 
+    var _this = this;
+
+    var whatToRender;
+
+    if(_this.state.loggedIn){
+      // _this.updateView();
+      whatToRender =  <View style={styles.container}>
         {/* MAIN HEADER - USER INFO & PROFILE PICTURE */}
         <View style={styles.mainHeader}>
             <View style={styles.bgImageWrapper}>
-              <Image source={{uri: 'https://scontent-fra3-1.xx.fbcdn.net/hphotos-xpf1/v/t1.0-9/12645175_105783416476080_5516439986353168860_n.jpg?oh=54fb31f09d96e9a4ff4b865409bb18b6&oe=57702A2F'}} style={styles.bgImage} />
+              <Image source={{uri: _this.state.photo }} style={styles.bgImage} />
             </View>
             <View style={styles.mainHeaderContent}>
-            <Image style={styles.profilePicture}  source={{uri: 'https://scontent-fra3-1.xx.fbcdn.net/hphotos-xpf1/v/t1.0-9/12645175_105783416476080_5516439986353168860_n.jpg?oh=54fb31f09d96e9a4ff4b865409bb18b6&oe=57702A2F'}}/>
+            <Image style={styles.profilePicture}  source={{uri: _this.state.photo }}/>
             <Text style={styles.fullName}>
-              Qasim A.
+              {_this.state.info.name}
               {"\n"}
               <Text style={styles.userInformation}>
               0 sales - 0 purchases - since 16/02/14
@@ -46,11 +138,12 @@ class Profile extends Component {
           </View>
         </View>
 
+
+
         <ScrollView
-  contentContainerStyle={styles.contentContainer}
-  style={styles.scrollView}
-  showsVerticalScrollIndicator={false}>
-   {/* SHARE HOLDER */}
+          contentContainerStyle={styles.contentContainer}
+          showsVerticalScrollIndicator={false}>
+           {/* SHARE HOLDER */}
         <View style={styles.optionsHolder}>
           <View style={styles.shareHolder}>
             <Text style={styles.shareTitle}>SHARE VLOO & INVITE YOUR FRIENDS</Text>
@@ -65,7 +158,7 @@ class Profile extends Component {
         </View>
 
       {/* USER MENU */}
-        
+
         <View style={styles.userMenuHolder}>
 
           <View style={styles.menuItemHolder}>
@@ -116,7 +209,7 @@ class Profile extends Component {
                 <Icon name="ios-arrow-forward" size={26} style={{marginLeft: 75, marginTop: 5, color:'#a7a7a7'}}/>
               </View>
             </TouchableHighlight>
- 
+
           </View>
         </View>
 
@@ -140,7 +233,8 @@ class Profile extends Component {
           </View>
         </View>
 
-      {/* VLOO MENU */}
+
+        {/* VLOO MENU */}
 
         <View style={styles.vlooMenuHolder}>
           <View style={styles.vlooMenuItemHolder}>
@@ -176,24 +270,106 @@ class Profile extends Component {
           </View>
         </View>
 
+        <View style={styles.facebookAuthButton}>
+        <FBLogin
 
+          permissions={["email","user_friends"]}
+          onLogin={function(data){
+            _this.setState({ user : data.credentials, loggedIn: true, });
+            _this.createNewUserFromFacebook();
+          }}
+          onLogout={function(){
+            _this.setState({ user : null, loggedIn: false, });
+          }}
+          onLoginFound={function(data){
+            _this.setState({ user : data.credentials, loggedIn: true, });
+          }}
+          onLoginNotFound={function(){
+            _this.setState({ user : null, loggedIn: false, });
+          }}
+          onError={function(data){
 
-        <View style={styles.logOutHolder}>
-          <TouchableWithoutFeedback>
-            <Text style={styles.logOutText}>Logout</Text>
-          </TouchableWithoutFeedback>
+          }}
+          onCancel={function(){
+
+          }}
+          onPermissionsMissing={function(data){
+
+          }}
+        />
         </View>
 
         <Banner.AdMobBanner
+          style={{marginBottom: 47,}}
           bannerSize={"smartBannerPortrait"}
           adUnitID={"ca-app-pub-0032051710031187/7869830279"}
           didFailToReceiveAdWithError={this.bannerError} />
 
       </ScrollView>
-
-     
       </View>
-      
+    ;} else {
+      whatToRender =
+          <View style={styles.logInContainer}>
+            <View style={styles.bgImageWrapper}>
+              <Image source={{uri: 'https://s3.amazonaws.com/vlomrkt/bahrainBackground.jpg'}} style={styles.bgImageLogin} />
+            </View>
+
+            <View style={styles.logInHeader}>
+              <Text style={{color: 'white', fontSize: 13, fontWeight: 'bold', marginBottom: 3, letterSpacing: 3,}}>JOIN NOW!</Text>
+              <Text style={{color: 'white', fontSize: 23, fontWeight: 'bold'}}>It's easier than ever to sell your items with Vloo</Text>
+              <View style={{backgroundColor: 'white', width: 77, height: 3, marginTop: 15, marginBottom: 15}} />
+              <Text style={{color: 'white', fontSize: 18, fontWeight: '400'}}>Log in and discover beautiful things near you or start selling in seconds. </Text>
+            </View>
+
+            <View style={styles.authButtonsHolder}>
+
+
+              <FBLogin
+              style={{backgroundColor: 'rgba(102, 86, 200, 0.0)',}}
+              permissions={["email","user_friends"]}
+              onLogin={function(data){
+                console.log("Logged in!");
+                _this.setState({ user : data.credentials, loggedIn: true, });
+              }}
+              onLogout={function(){
+                console.log("Logged out.");
+                _this.setState({ user : null, loggedIn: false, userToken: null, userId: null, });
+              }}
+              onLoginFound={function(data){
+                console.log("Existing login found.");
+                _this.setState({ user : data.credentials, loggedIn: true, });
+              }}
+              onLoginNotFound={function(){
+                console.log("No user logged in.");
+                _this.setState({ user : null, loggedIn: false, });
+              }}
+              onError={function(data){
+                console.log("ERROR");
+              }}
+              onCancel={function(){
+                console.log("User cancelled.");
+              }}
+              onPermissionsMissing={function(data){
+                console.log("Check permissions!");
+              }}
+            />
+
+            <TouchableOpacity
+            style={styles.logInEmailButton}
+            activeOpacity={0.8}>
+                <Text style={styles.logInEmailButtonText}>Log in with E-mail</Text>
+            </TouchableOpacity>
+
+          </View>
+        </View>
+    ;}
+
+		return(
+
+      <View style={styles.container}>
+        {whatToRender}
+      </View>
+
 		);
 	}
 }
@@ -202,7 +378,7 @@ class Profile extends Component {
 var styles = StyleSheet.create({
 	container:{
 		flex: 1,
-    backgroundColor: '#eeeeee'
+    backgroundColor: '#eeeeee',
 	},
   mainHeader: {
     backgroundColor: 'rgba(102, 86, 200, 0.6)',
@@ -217,6 +393,54 @@ var styles = StyleSheet.create({
     opacity: 0.1,
     height: 160,
     width: 400,
+  },
+  bgImageLogin: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    opacity: 0.7,
+  },
+  logInContainer: {
+    flex: 1,
+    alignItems: 'center',
+    height: 700,
+  },
+  logInHeader: {
+    marginTop: 90,
+    marginLeft: 7,
+    marginRight: 7,
+    backgroundColor: 'transparent',
+  },
+  authButtonsHolder: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+    marginTop: -100,
+  },
+  logInEmailButton: {
+    height: 27,
+    width: 170,
+    marginTop: 6,
+    marginLeft: -6,
+
+    backgroundColor: '#f3f3f3',
+    borderRadius: 3,
+    borderWidth: 1,
+    borderColor: '#ececec',
+
+    shadowColor: "#000000",
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    shadowOffset: {
+      height: 1,
+      width: 0
+    },
+  },
+  logInEmailButtonText: {
+    textAlign: 'center',
+    margin: 5,
+    color: '#a3a3a3',
+    fontSize: 15,
   },
   mainHeaderContent: {
     marginTop: 70,
@@ -273,7 +497,7 @@ var styles = StyleSheet.create({
   userMenuHolder:{
     alignItems: 'center',
     backgroundColor: 'white',
-    height: 168,
+    height: 178,
     marginTop: 25,
     borderTopWidth: 1,
     borderTopColor: '#c2c2c2',
@@ -345,6 +569,12 @@ var styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
   },
+  facebookAuthButton: {
+    flex: 1,
+    marginTop: 10,
+    marginBottom: 10,
+    alignItems: 'center',
+  },
   logOutHolder: {
     flex: 1,
     marginTop: 10,
@@ -354,8 +584,8 @@ var styles = StyleSheet.create({
   logOutText: {
     fontWeight: '500',
     fontSize: 15,
-  }
-  
+  },
+
 
 });
 

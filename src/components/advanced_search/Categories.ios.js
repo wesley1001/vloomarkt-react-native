@@ -10,7 +10,7 @@ import React, {
   View,
 } from 'react-native';
 
-var Icon = require('../../node_modules/react-native-vector-icons/Ionicons');
+var Icon = require('react-native-vector-icons/Ionicons');
 
 class Categories extends Component {
 
