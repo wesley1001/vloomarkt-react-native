@@ -55,7 +55,7 @@ class MyApp extends React.Component {
     constructor(props){
       super(props);
       this.state = {
-      selectedTab: 'news',
+      selectedTab: 'search',
      }
     }
 
@@ -71,14 +71,25 @@ class MyApp extends React.Component {
        })
      };
 
+     sellHandleChange(){
+      this.setState({
+        selectedTab: 'sell',
+       })
+     };
+
      newsHandleChange(){
       this.setState({
         selectedTab: 'news',
        })
      };
 
+     profileHandleChange(){
+      this.setState({
+        selectedTab: 'profile',
+       })
+     };
+
     render() {
-      const { reducer, token, increment, decrement, savetoken } = this.props;
       return (
         <View style={styles.container}>
             <TabBarIOS tintColor="white"
@@ -101,8 +112,18 @@ class MyApp extends React.Component {
                 selected={this.state.selectedTab === "search"}
                 onPress={this.searchHandleChange.bind(this)} >
                 <View style={styles.main}>
-
                   <NewsProvidor />
+                </View>
+              </Icon.TabBarItem>
+
+              <Icon.TabBarItem
+                iconName="ios-camera-outline"
+                selectedIconName="ios-camera"
+                title="Sell"
+                selected={this.state.selectedTab === "sell"}
+                onPress={this.sellHandleChange.bind(this)} >
+                <View style={styles.main}>
+                  <Sell />
                 </View>
               </Icon.TabBarItem>
 
@@ -116,6 +137,20 @@ class MyApp extends React.Component {
                 <LogInEmailProvider />
               </View>
             </Icon.TabBarItem>
+
+
+            <Icon.TabBarItem
+              iconName="ios-person-outline"
+              selectedIconName="ios-person"
+              title="Profile"
+              selected={this.state.selectedTab === "profile"}
+              onPress={this.profileHandleChange.bind(this)} >
+              <View style={styles.main}>
+                <Profile />
+              </View>
+            </Icon.TabBarItem>
+
+
            </TabBarIOS>
       </View>
       );

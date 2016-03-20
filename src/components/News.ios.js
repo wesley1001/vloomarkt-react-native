@@ -12,12 +12,13 @@ import React, {
   TextInput,
   TouchableHighlight,
   AlertIOS,
+  ActivityIndicatorIOS,
 } from 'react-native';
 
 var t = require('tcomb-form-native');
 var Form = t.form.Form;
 
-var Person = t.struct({
+var RegistrationForm = t.struct({
   username: t.String,
   email: t.String,
   password: t.String,
@@ -76,6 +77,13 @@ class News extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      username: null,
+      email: null,
+      password1: null,
+      password2: null,
+      animating: false,
+    }
   }
 
   componentWillMount() {
@@ -83,50 +91,77 @@ class News extends Component {
 
 
   componentDidMount() {
-    // give focus to the name textbox
-    this.refs.form.getComponent('username').refs.input.focus();
+
   }
 
-  getUserToken() {
-    const { reducer, updateToken } = this.props;
-    console.log(reducer);
-    fetch('http://www.ondernemer.io/api/auth/login/', {
+  registerUser() {
+    fetch('http://www.dev.ondernemer.io/api/auth/registration/', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
+        'Content-Type': 'text/javascript',
       },
       body: JSON.stringify({
-          "username": "admin",
-          "password": "password",
+          "username": this.state.username,
+          "email": this.state.email,
+          "password1": this.state.password1,
+          "password2": this.state.password2,
       })
     })
-    .then((response) => response.json())
-    .then((responseData) => {
-      updateToken(responseData.key);
-      console.log(responseData.key);
-    }).catch(function(ex) {
-    console.log(ex)
+    .then((response) => {
+      response.json()
     })
+    .then((responseData) => {
+      console.log("Response Data === > ", responseData);
+      console.log("User Registered!");
+      this.setState({
+        animating: false,
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      console.log('Error: ', err.message)
+    })
+  }
+
+  onPress() {
+    var value = this.refs.form.getValue();
+    if (value) {
+      console.log(value);
+      this.setState({
+        username : value.username,
+        email: value.email,
+        password1 : value.password,
+        password2 : value.confirmPassword,
+        animating: true,
+      });
+      this.registerUser();
+    }
   }
 
 
   render() {
-    const { reducer, updateToken } = this.props;
+    const { authReducer, updateToken, category } = this.props;
 
     return (
       <View style={styles.container}>
         <Form
           ref="form"
-          type={Person}
+          type={RegistrationForm}
           options={options}
         />
       <TouchableHighlight
         style={styles.button}
-        onPress={this.getUserToken.bind(this)}
+        onPress={this.onPress.bind(this)}
         underlayColor='#99d9f4'>
-          <Text style={styles.buttonText}>Join Vloo {reducer}</Text>
-        </TouchableHighlight>
+          <Text style={styles.buttonText}>Join Vloo</Text>
+      </TouchableHighlight>
+
+        <ActivityIndicatorIOS
+          animating={this.state.animating}
+          style={[styles.centering, {height: 80}]}
+          size="large"
+        />
       </View>
     );
   }

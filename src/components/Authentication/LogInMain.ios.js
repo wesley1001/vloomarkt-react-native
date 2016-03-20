@@ -93,16 +93,13 @@ class LogInMain extends Component {
       .done();
   }
 
-  
+
 
   render() {
     var _this = this;
     return (
       <View style={styles.container}>
         <View style={styles.logInContainer}>
-            <View style={styles.bgImageWrapper}>
-              <Image source={{uri: 'https://s3.amazonaws.com/vlomrkt/bahrainBackground.jpg'}} style={styles.bgImageLogin} />
-            </View>
 
             <View style={styles.logInHeader}>
               <Text style={{color: 'white', fontSize: 13, fontWeight: 'bold', marginBottom: 3, letterSpacing: 3,}}>JOIN NOW!</Text>
@@ -112,9 +109,7 @@ class LogInMain extends Component {
             </View>
 
             <View style={styles.authButtonsHolder}>
-
-
-              <FBLogin 
+              <FBLogin
               style={{backgroundColor: 'rgba(102, 86, 200, 0.0)',}}
               permissions={["email","user_friends"]}
               onLogin={function(data){
@@ -151,9 +146,8 @@ class LogInMain extends Component {
             activeOpacity={0.8}>
                 <Text style={styles.logInEmailButtonText}>Log in with E-mail</Text>
             </TouchableOpacity>
-            
           </View>
-        </View>    
+        </View>
       </View>
     );
   }
@@ -369,7 +363,7 @@ var styles = StyleSheet.create({
     fontWeight: '500',
     fontSize: 15,
   },
-  
+
 
 });
 

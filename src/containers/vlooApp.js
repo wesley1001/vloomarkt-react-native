@@ -19,14 +19,15 @@ class VlooApp extends Component {
   render() {
     const { state, actions } = this.props;
     return (
-      <MyApp reducer={state.token}
+      <MyApp
+        token={state.token}
         {...actions} />
     );
   }
 }
 
 export default connect(state => ({
-    state: state.reducer
+    state: state.authReducer
   }),
   (dispatch) => ({
     actions: bindActionCreators(myActions, dispatch)

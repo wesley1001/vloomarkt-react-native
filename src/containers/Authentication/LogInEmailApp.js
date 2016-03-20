@@ -16,14 +16,17 @@ class LogInEmailApp extends Component {
   render() {
     const { state, actions } = this.props;
     return (
-      <LogInEmail reducer={state.token}
+      <LogInEmail token={state.token}
+                  username={state.username}
+                  selectedCategory={state.selectedCategory}
+                  searchTitle={state.searchTitle}
         {...actions} />
     );
   }
 }
 
 export default connect(state => ({
-    state: state.reducer
+    state: state.authReducer
   }),
   (dispatch) => ({
     actions: bindActionCreators(myActions, dispatch)

@@ -14,6 +14,8 @@ import React, {
   StatusBarIOS,
 } from 'react-native';
 
+import axios from 'axios';
+
 var Progress = require('react-native-progress');
 // var Icon = require('../../node_modules/react-native-vector-icons/Ionicons');
 var Banner = require("react-native-admob");
@@ -62,18 +64,17 @@ class Discover extends Component {
   }
 
   fetchData() {
-    fetch('http://ondernemer.io/api/item/')
-      .then((response) => response.json())
-      .then((responseData) => {
-        console.log(responseData);
-        this.setState({
-          dataSource: this.state.dataSource.cloneWithRows(responseData),
-          loaded: true,
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+    axios.get('http://ondernemer.io/api/item/')
+    .then((responseData) => {
+      console.log(responseData.data);
+      this.setState({
+        dataSource: this.state.dataSource.cloneWithRows(responseData.data),
+        loaded: true,
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+    })
   }
 
 

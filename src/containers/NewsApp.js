@@ -8,6 +8,7 @@ import News from '../components/News';
 import * as myActions from '../actions/actions';
 import { connect } from 'react-redux';
 
+
 // @connect(state => ({
 //   state: state.counter
 // }))
@@ -19,14 +20,16 @@ class NewsApp extends Component {
   render() {
     const { state, actions } = this.props;
     return (
-      <News reducer={state.token}
+      <News token={state.token}
+            username={state.username}
+            category={state.selectedCategory}
         {...actions} />
     );
   }
 }
 
 export default connect(state => ({
-    state: state.reducer
+    state: state.authReducer
   }),
   (dispatch) => ({
     actions: bindActionCreators(myActions, dispatch)

@@ -6,9 +6,7 @@ import thunk from 'redux-thunk';
 import * as reducers from '../../reducers';
 import LogInEmailApp from './LogInEmailApp';
 
-const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
-const reducer = combineReducers(reducers);
-const store = createStoreWithMiddleware(reducer);
+import store from '../store';
 
 export default class LogInEmailProvider extends Component {
   render() {

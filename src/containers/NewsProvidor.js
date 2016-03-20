@@ -6,9 +6,9 @@ import thunk from 'redux-thunk';
 import * as reducers from '../reducers';
 import NewsApp from './NewsApp';
 
-const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
-const reducer = combineReducers(reducers);
-const store = createStoreWithMiddleware(reducer);
+import store from './store';
+
+
 
 export default class NewsProvidor extends Component {
   render() {

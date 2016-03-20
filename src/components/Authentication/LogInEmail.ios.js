@@ -56,7 +56,28 @@ class LogInEmail extends Component {
   }
 
   logInUserAndGetToken(){
-
+    const { updateToken, getItemsByCategory } = this.props;
+    fetch('http://www.ondernemer.io/api/auth/login/', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+          "username": this.state.username,
+          "password": this.state.password,
+      })
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      console.log(updateToken(responseData.key));
+      updateToken(responseData.key);
+      this.setState({
+        animating: false,
+      });
+    }).catch(function(ex) {
+    console.log(ex);
+    })
   }
 
   onPress() {
@@ -68,62 +89,55 @@ class LogInEmail extends Component {
         password : value.password,
         animating: true,
       });
-      const { reducer, updateToken } = this.props;
-      fetch('http://www.ondernemer.io/api/auth/login/', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            "username": this.state.username,
-            "password": this.state.password,
-        })
-      })
-      .then((response) => response.json())
-      .then((responseData) => {
-        updateToken(responseData.key);
-        console.log(updateToken(responseData.key))
-        console.log(responseData.key);
-        this.setState({
-          animating: false,
-        });
-      }).catch(function(ex) {
-      console.log(ex);
-      })
+      this.logInUserAndGetToken();
     }
   }
 
+  categoryOnPress() {
+    const { searchTitle, selectedCategory, updateToken, getItemsByCategory } = this.props;
+    getItemsByCategory(title=searchTitle,category=selectedCategory);
+  }
+
   render() {
-    const { reducer } = this.props;
+    const { token, username, category } = this.props;
 
     return (
-      <View style={styles.container}>
-        <Text>{reducer}</Text>
-        <Form
-          ref="form"
-          type={LogInEmailForm}
-          options={options}
-        />
-      <TouchableHighlight style={styles.button} onPress={this.onPress.bind(this)} underlayColor='#99d9f4'>
-          <Text style={styles.buttonText}>Log In</Text>
-        </TouchableHighlight>
-        <ActivityIndicatorIOS
-        animating={this.state.animating}
-        style={[styles.centering, {height: 80}]}
-        size="large"
-      />
-      </View>
+            <View style={styles.wrapper}>
+              <Text>{token} AND category: {category}</Text>
+              <Form
+                ref="form"
+                type={LogInEmailForm}
+                options={options}
+              />
+            <TouchableHighlight style={styles.button} onPress={this.onPress.bind(this)} underlayColor='#99d9f4'>
+                <Text style={styles.buttonText}>Log In</Text>
+              </TouchableHighlight>
+            <TouchableHighlight>
+                <Text style={styles.registerText}>Don't have an account yet? Join us</Text>
+            </TouchableHighlight>
+
+              <ActivityIndicatorIOS
+              animating={this.state.animating}
+              style={[styles.centering, {height: 80}]}
+              size="large"
+            />
+            <TouchableHighlight onPress={this.categoryOnPress.bind(this)}>
+                <Text style={styles.registerText}>Get Cat</Text>
+            </TouchableHighlight>
+            </View>
     );
   }
 }
 
 var styles = StyleSheet.create({
-  container: {
+  wrapper: {
     justifyContent: 'center',
     marginTop: 100,
     padding: 20,
-    backgroundColor: '#ffffff',
+  },
+  bgImageWrapper: {
+    position: 'absolute',
+    top: 0, bottom: 0, left: 0, right: 0
   },
   title: {
     fontSize: 30,
@@ -144,6 +158,10 @@ var styles = StyleSheet.create({
     marginBottom: 10,
     alignSelf: 'stretch',
     justifyContent: 'center'
+  },
+  registerText: {
+    textAlign: 'center',
+
   }
 });
 

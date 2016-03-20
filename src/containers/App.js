@@ -5,10 +5,11 @@ import thunk from 'redux-thunk';
 
 import * as reducers from '../reducers';
 import VlooApp from './vlooApp';
+import store from './store';
 
-const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
-const reducer = combineReducers(reducers);
-const store = createStoreWithMiddleware(reducer);
+// const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
+// const reducer = combineReducers(reducers);
+// const store = createStoreWithMiddleware(reducer);
 
 export default class App extends Component {
   render() {
