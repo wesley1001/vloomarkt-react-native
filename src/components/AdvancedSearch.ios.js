@@ -73,30 +73,17 @@ class AdvancedSearch extends Component {
 	      (error) => alert(error.message),
 	      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
 	    );
-
-
-  	}
-
-
-
-  	_GoBackToSearchPress(){
-    	this.props.navigator.pop();
-  	}
-
-  	_SearchPress(){
-
   	}
 
 	render(){
+    const { actions, assets } = this.props;
 		return(
 			<View style={styles.container}>
-
 				<View style={styles.header}></View>
-
 				<View style={styles.mainNav}>
 	                <View style={styles.goBackToSearchButton}>
 		            	<TouchableOpacity
-		                	onPress={Actions.pop}
+		                	onPress={actions.pop}
 		                	activeOpacity={0.8}>
 			            	<View>
 			            		<Text style={styles.searchCancelButtonText}>
@@ -108,7 +95,6 @@ class AdvancedSearch extends Component {
 	              	<Text style={styles.mainNavHeader}> Advanced Search</Text>
 
 	              	<TouchableOpacity
-		                	onPress={this._SearchPress.bind(this)}
 		                	activeOpacity={0.8}>
 			            	<View>
 			            		<Text style={styles.searchButton}>
@@ -117,7 +103,6 @@ class AdvancedSearch extends Component {
 			            	</View>
 		            	</TouchableOpacity>
 		        </View>
-
 
 		        <View style={styles.searchBarSection}>
 		        	<Icon name="ios-search-strong" size={25} style={{color:'#6656c8', marginTop: 3}}/>
@@ -134,19 +119,11 @@ class AdvancedSearch extends Component {
 		        </View>
 
 		        <View style={styles.divider}></View>
-
 		        <View style={styles.location}>
 		        	<Maps region={this.state.region}/>
 		        </View>
-
 		        <View style={styles.divider}></View>
-
 		        <Categories />
-
-
-
-
-
 	        </View>
 		);
 	}

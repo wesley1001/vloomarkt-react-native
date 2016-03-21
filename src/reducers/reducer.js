@@ -11,8 +11,15 @@ const initialState = {
   discoverResponse: null,
 };
 
-export default function reducer(state = initialState, action = {}) {
+export default function auth(state = initialState, action = {}) {
   switch (action.type) {
+    case types.CHANGE_ROUTER:
+      return {
+        ...state,
+        payload: {
+          name: action.value,
+        }
+      }
     case types.SELECT_TAB:
       return {
         ...state,
@@ -37,6 +44,11 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         discoverResponse: action.value
+      }
+    case types.SET_SEARCH_KEYWORD:
+      return {
+        ...state,
+        searchKeyword: action.value
       }
     default:
       return state;

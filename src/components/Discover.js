@@ -22,29 +22,8 @@ var Progress = require('react-native-progress');
 var Banner = require("react-native-admob");
 var SGListView = require('react-native-sglistview');
 
-import {bindActionCreators} from 'redux';
 
-import * as myActions from '../actions/actions';
-import { connect } from 'react-redux';
-
-import {
-  actions as routerActions,
-} from 'react-native-router-redux';
-
-const mapStateToProps = state => ({
-  router: state.router,
-  auth: state.authReducer,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators({
-    ...routerActions,
-    ...myActions,
-  }, dispatch),
-  dispatch,
-});
-
-class DiscoverApp extends Component {
+class Discover extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -79,7 +58,7 @@ class DiscoverApp extends Component {
 
 
   render() {
-    const { token, updateToken, changeLoginStatus, getItemsByCategory } = this.props;
+    const { actions, loggedIn, token, router, auth } = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -224,4 +203,4 @@ class DiscoverApp extends Component {
   });
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(DiscoverApp);
+module.exports = Discover;

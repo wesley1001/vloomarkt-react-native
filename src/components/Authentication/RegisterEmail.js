@@ -12,17 +12,19 @@ import React, {
   TextInput,
   TouchableHighlight,
   AlertIOS,
+  ActivityIndicatorIOS,
 } from 'react-native';
 
 var t = require('tcomb-form-native');
 var Form = t.form.Form;
 
-var Person = t.struct({
+var RegistrationForm = t.struct({
   username: t.String,
   email: t.String,
   password: t.String,
   confirmPassword: t.String
 });
+
 
 
 var options = {
@@ -76,29 +78,28 @@ class RegisterEmail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      registered: false,
-      username: undefined,
-      email: undefined,
-      password1:  undefined,
-      password2: undefined,
-      response: undefined,
-    };
+      username: null,
+      email: null,
+      password1: null,
+      password2: null,
+      animating: false,
+    }
   }
 
   componentWillMount() {
   }
 
+
   componentDidMount() {
-    // give focus to the name textbox
-    this.refs.form.getComponent('username').refs.input.focus();
+
   }
 
-  fetchUserDetails(){
-    fetch('http://www.ondernemer.io/api/auth/registration/', {
+  registerUser() {
+    fetch('http://www.dev.ondernemer.io/api/auth/registration/', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
+        'Content-Type': 'text/javascript',
       },
       body: JSON.stringify({
           "username": this.state.username,
@@ -107,17 +108,19 @@ class RegisterEmail extends Component {
           "password2": this.state.password2,
       })
     })
-    .then((response) => response.json())
+    .then((response) => {
+      response.json()
+    })
     .then((responseData) => {
-      console.log(responseData)
-      console.log('OK!')
+      console.log("Response Data === > ", responseData);
+      console.log("User Registered!");
       this.setState({
-        registered : true,
-        response : responseData,
+        animating: false,
       });
-      console.log(this.state.response)
-    }).catch(function(ex) {
-    console.log(ex)
+    })
+    .catch(err => {
+      console.log(err);
+      console.log('Error: ', err.message)
     })
   }
 
@@ -127,27 +130,35 @@ class RegisterEmail extends Component {
       console.log(value);
       this.setState({
         username : value.username,
-        email : value.email,
+        email: value.email,
         password1 : value.password,
         password2 : value.confirmPassword,
+        animating: true,
       });
-      this.fetchUserDetails();
+      this.registerUser();
     }
   }
-
 
   render() {
     return (
       <View style={styles.container}>
-        {/* display */}
         <Form
           ref="form"
-          type={Person}
+          type={RegistrationForm}
           options={options}
         />
-      <TouchableHighlight style={styles.button} onPress={this.onPress.bind(this)} underlayColor='#99d9f4'>
+      <TouchableHighlight
+        style={styles.button}
+        onPress={this.onPress.bind(this)}
+        underlayColor='#99d9f4'>
           <Text style={styles.buttonText}>Join Vloo</Text>
-        </TouchableHighlight>
+      </TouchableHighlight>
+
+        <ActivityIndicatorIOS
+          animating={this.state.animating}
+          style={[styles.centering, {height: 80}]}
+          size="large"
+        />
       </View>
     );
   }

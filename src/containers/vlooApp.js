@@ -14,7 +14,6 @@ import {
 
 
 import {bindActionCreators} from 'redux';
-import News from '../components/News';
 
 import * as myActions from '../actions/actions';
 import { connect } from 'react-redux';
@@ -22,13 +21,17 @@ import { connect } from 'react-redux';
 var Icon = require('react-native-vector-icons/Ionicons');
 import TabBarNavigator from 'react-native-tabbar-navigator';
 
-import DiscoverProvider from '../containers/DiscoverProvider';
-import SellProvider from '../containers/SellProvider'
-import NewsProvider from '../containers/NewsProvider';
-import SearchProvider from '../containers/SearchProvider';
+import AdvancedSearch from '../components/AdvancedSearch';
 
-import LogInEmailProvider from '../containers/Authentication/LogInEmailProvider'
-import LogInMainProvider from '../containers/Authentication/LogInMainProvider'
+import Discover from '../components/Discover';
+import Sell from '../components/Sell'
+import News from '../components/News';
+import Search from '../components/Search';
+
+import LogInEmail from '../components/Authentication/LogInEmail';
+import LogInMain from '../components/Authentication/LogInMain';
+import RegisterEmail from '../components/Authentication/RegisterEmail';
+
 
 
 
@@ -67,15 +70,20 @@ class VlooApp extends Component {
 
     render() {
       return (
-        <Router {...this.props} >
-          <Schema name="default" {...defaultSchema} />
+        <Router {...this.props}  initial="profile" >
+          <Schema name="default" {...defaultSchema}/>
+          <Route name="login" component={LogInEmail} />
+          <Route name="register" component={RegisterEmail} />
+          <Route name="advanced" component={AdvancedSearch} hideNavBar={true}/>
           <TabRoute name="tabBar" barTint='#FFFFFF' tint="#32DEAF">
-            <Route name="discover" component={DiscoverProvider} title="Discover" tabItem={{title: 'Discover'}} hideNavBar={true}/>
-            <Route name="search" component={SearchProvider} title="Search" tabItem={{title: 'Search'}} hideNavBar={true}/>
-            <Route name="sell" component={SellProvider} title="Discover" tabItem={{title: 'Sell'}} hideNavBar={true}/>
-            <Route name="news" component={NewsProvider} title="News" tabItem={{title: 'News'}} hideNavBar={true}/>
-            <Route name="profile" component={LogInMainProvider} title="Profile" tabItem={{title: 'Profile'}} hideNavBar={true}/>
+            <Route name="discover" component={Discover} title="Discover" tabItem={{title: 'Discover'}} hideNavBar={true}/>
+            <Route name="search" component={Search} title="Search" tabItem={{title: 'Search'}} hideNavBar={true}/>
+            <Route name="sell" component={Sell} title="Discover" tabItem={{title: 'Sell'}} hideNavBar={true}/>
+            <Route name="news" component={News} title="News" tabItem={{title: 'News'}} hideNavBar={true}/>
+            <Route name="profile" component={LogInMain} title="Profile" tabItem={{title: 'Profile'}} hideNavBar={true}/>
+
           </TabRoute>
+
         </Router>
     );
   }

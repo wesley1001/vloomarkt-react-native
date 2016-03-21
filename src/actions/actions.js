@@ -1,8 +1,22 @@
-import * as types from './actionTypes';
 import axios from 'axios';
+import { actions as routerActions } from 'react-native-router-redux';
+
+import * as types from './actionTypes';
+
 
 const ROOT_URL = 'http://ondernemer.io/api/'
 
+
+export function changeRouter(routeName) {
+  return (dispatch) => {
+    dispatch({
+      type: routerActions.actionTypes.ROUTER_PUSH,
+      payload: {
+        name: routeName,
+      },
+    });
+  };
+}
 
 export function selectTab(tab) {
   return {
@@ -22,6 +36,13 @@ export function changeLoginStatus(status){
   return {
     type: types.CHANGE_LOGIN_STATUS,
     value: status
+  }
+}
+
+export function setSearchKeyword(keyword) {
+  return {
+    type: types.SET_SEARCH_KEYWORD,
+    value: keyword
   }
 }
 
