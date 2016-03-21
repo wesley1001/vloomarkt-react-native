@@ -4,17 +4,16 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
 import * as reducers from '../reducers';
-import NewsApp from './NewsApp';
-
+import SellApp from './SellApp';
 import store from './store';
 
 
 
-export default class NewsProvidor extends Component {
+export default class SellProvidor extends Component {
   render() {
     return (
       <Provider store={store}>
-        <NewsApp />
+        <SellApp />
       </Provider>
     );
   }

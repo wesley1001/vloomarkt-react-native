@@ -139,10 +139,7 @@ class News extends Component {
     }
   }
 
-
   render() {
-    const { authReducer, updateToken, category } = this.props;
-
     return (
       <View style={styles.container}>
         <Form

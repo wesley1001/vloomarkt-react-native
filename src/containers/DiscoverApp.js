@@ -1,3 +1,5 @@
+'use strict';
+
 'user strict';
 
 
@@ -17,17 +19,32 @@ import React, {
 import axios from 'axios';
 
 var Progress = require('react-native-progress');
-// var Icon = require('../../node_modules/react-native-vector-icons/Ionicons');
 var Banner = require("react-native-admob");
 var SGListView = require('react-native-sglistview');
 
-var Location = require('../components/helpers/Location');
+import {bindActionCreators} from 'redux';
 
+import * as myActions from '../actions/actions';
+import { connect } from 'react-redux';
 
-var ALL_ITEMS_URL = 'http://dev.ondernemer.io/api/item/';
+import {
+  actions as routerActions,
+} from 'react-native-router-redux';
 
-class Discover extends Component {
+const mapStateToProps = state => ({
+  router: state.router,
+  auth: state.authReducer,
+});
 
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators({
+    ...routerActions,
+    ...myActions,
+  }, dispatch),
+  dispatch,
+});
+
+class DiscoverApp extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -42,25 +59,7 @@ class Discover extends Component {
   }
 
   componentDidMount() {
-    this.animate();
     this.fetchData();
-  }
-
-
-
-  animate() {
-    var progress = 0;
-    this.setState({ progress });
-    setTimeout(() => {
-      this.setState({ indeterminate: false });
-      setInterval(() => {
-        progress += Math.random()/5;
-        if(progress > 1) {
-          progress = 1;
-        }
-        this.setState({ progress });
-      }, 500);
-    }, 1500);
   }
 
   fetchData() {
@@ -80,16 +79,12 @@ class Discover extends Component {
 
 
   render() {
-    if (!this.state.loaded) {
-      return this.renderLoadingView();
-    }
-
-
+    const { token, updateToken, changeLoginStatus, getItemsByCategory } = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.header}>
             <Text style={styles.headerTitle}>Discover</Text>
-            <Text style={styles.headerLocation}>OFFERS AROUND <Location /></Text>
+            <Text style={styles.headerLocation}>{this.props.auth.token}</Text>
         </View>
           <SGListView style={{marginBottom: 45,}}
             contentContainerStyle={styles.list}
@@ -108,7 +103,7 @@ class Discover extends Component {
       <View>
       <View style={styles.header}>
             <Text style={styles.headerTitle}>Discover</Text>
-            <Text style={styles.headerLocation}>OFFERS AROUND <Location /></Text>
+            <Text style={styles.headerLocation}>OFFERS AROUND</Text>
         </View>
         <View style={styles.loadingView}>
           <Text style={styles.loadingText}> Please wait while we fetch offers near you! </Text>
@@ -135,96 +130,98 @@ class Discover extends Component {
             <Text style={styles.imageText}>
             {item.title}
             {"\n"}
-            {item.price} <Text style={{fontWeight: 'bold'}}> BHD</Text>
+            {item.price} <Text style={{fontWeight: 'bold'}}>BHD</Text>
             </Text>
           </View>
+
       </View>
     );
   }
 }
 
-var styles = StyleSheet.create({
-  header: {
-    height: 50,
-    backgroundColor: '#6656c8',
-    justifyContent: 'center',
-    paddingTop: 18,
-  },
-  headerTitle: {
-    fontSize: 13,
-    color: '#fff',
-    textAlign: 'center',
-    letterSpacing: -1,
-    fontWeight: 'bold',
-  },
-  headerLocation: {
-    fontSize: 13,
-    color: '#fff',
-    paddingTop: 0,
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  loadingText: {
-    color: '#6656c8',
-    fontSize: 19,
-    letterSpacing: -1,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    flex: 1,
-    marginBottom: 9,
-  },
-  container: {
-    flex: 1,
+  var styles = StyleSheet.create({
+    header: {
+      height: 50,
+      backgroundColor: '#6656c8',
+      justifyContent: 'center',
+      paddingTop: 18,
+    },
+    headerTitle: {
+      fontSize: 13,
+      color: '#fff',
+      textAlign: 'center',
+      letterSpacing: -1,
+      fontWeight: 'bold',
+    },
+    headerLocation: {
+      fontSize: 13,
+      color: '#fff',
+      paddingTop: 0,
+      textAlign: 'center',
+      fontWeight: 'bold',
+    },
+    loadingText: {
+      color: '#6656c8',
+      fontSize: 19,
+      letterSpacing: -1,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      flex: 1,
+      marginBottom: 9,
+    },
+    container: {
+      flex: 1,
 
-  },
-  thumbContainer: {
-    borderTopWidth: 3,
-    borderColor: 'rgba(0, 0, 0, 0.05)',
-  },
-  separator: {
-    height: 1,
-    backgroundColor: '#CCCCCC',
-  },
-  list: {
-    justifyContent: 'flex-start',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    },
+    thumbContainer: {
+      borderTopWidth: 3,
+      borderColor: 'rgba(0, 0, 0, 0.05)',
+    },
+    separator: {
+      height: 1,
+      backgroundColor: '#CCCCCC',
+    },
+    list: {
+      justifyContent: 'flex-start',
+      flexDirection: 'row',
+      flexWrap: 'wrap',
 
-  },
-  row: {
-    justifyContent: 'center',
-    margin: 18,
-    marginTop: 23,
-    marginBottom: 26,
-    padding: 0,
-    width: 150,
-    height: 150,
-    alignItems: 'center',
-  },
-  thumb: {
-    width: 200,
-    height: 164,
-  },
-  imageTextBackground: {
-    alignItems: 'center',
-    width: 210,
-    height: 30,
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-    padding: 2,
-    borderTopColor: '#eee',
-    borderTopWidth: 1,
+    },
+    row: {
+      justifyContent: 'center',
+      margin: 18,
+      marginTop: 23,
+      marginBottom: 26,
+      padding: 0,
+      width: 150,
+      height: 150,
+      alignItems: 'center',
+    },
+    thumb: {
+      width: 200,
+      height: 164,
+    },
+    imageTextBackground: {
+      alignItems: 'center',
+      width: 210,
+      height: 30,
+      justifyContent: 'center',
+      backgroundColor: '#fff',
+      padding: 2,
+      borderTopColor: '#eee',
+      borderTopWidth: 1,
 
-  },
-  imageText: {
-    color: '#6656c8',
-    textAlign: 'center',
-    fontSize: 10,
-  },
-  loadingView: {
-    alignItems: 'center',
-    marginTop: 100,
-  },
-});
+    },
+    imageText: {
+      color: '#6656c8',
+      textAlign: 'center',
+      fontSize: 10,
+    },
+    loadingView: {
+      alignItems: 'center',
+      marginTop: 100,
+    },
+  });
 
-module.exports = Discover;
+
+export default connect(mapStateToProps, mapDispatchToProps)(DiscoverApp);

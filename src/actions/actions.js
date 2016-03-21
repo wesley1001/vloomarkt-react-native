@@ -1,17 +1,13 @@
 import * as types from './actionTypes';
 import axios from 'axios';
 
-const ROOT_URL = 'http://dev.ondernemer.io/api/'
+const ROOT_URL = 'http://ondernemer.io/api/'
 
-export function increment() {
-  return {
-    type: types.INCREMENT
-  };
-}
 
-export function decrement() {
+export function selectTab(tab) {
   return {
-    type: types.DECREMENT
+    type: types.SELECT_TAB,
+    value: tab
   };
 }
 
@@ -22,11 +18,11 @@ export function updateToken(token) {
   };
 }
 
-export function checkLoginStatus(status) {
+export function changeLoginStatus(status){
   return {
-    type: types.CHECK_LOGIN_STATUS,
+    type: types.CHANGE_LOGIN_STATUS,
     value: status
-  };
+  }
 }
 
 export function selectCategory(selected_category){

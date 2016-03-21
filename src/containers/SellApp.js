@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react-native';
 import {bindActionCreators} from 'redux';
-import News from '../components/News';
+import Sell from '../components/Sell';
 
 import * as myActions from '../actions/actions';
 import { connect } from 'react-redux';
@@ -11,12 +11,10 @@ import {
   actions as routerActions,
 } from 'react-native-router-redux';
 
-
 const mapStateToProps = state => ({
   router: state.router,
   auth: state.auth,
 });
-
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators({
     ...routerActions,
@@ -25,8 +23,7 @@ const mapDispatchToProps = (dispatch) => ({
   dispatch,
 });
 
-
-class NewsApp extends Component {
+class SellApp extends Component {
   constructor(props) {
     super(props);
   }
@@ -34,10 +31,10 @@ class NewsApp extends Component {
   render() {
     const { state, actions } = this.props;
     return (
-      <News
+      <Sell
         {...actions} />
     );
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(SellApp);
